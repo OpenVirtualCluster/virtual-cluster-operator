@@ -1,8 +1,8 @@
 # openvc
-// TODO(user): Add simple overview of use/purpose
+An operator to create Virtual clusters declaratively
 
 ## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+This operator creates virtual clusters declaratively using upstream Loft helm charts
 
 ## Getting Started
 
