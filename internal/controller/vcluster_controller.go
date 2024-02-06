@@ -19,19 +19,21 @@ package controller
 import (
 	"context"
 	"fmt"
+	"time"
+
 	helmv1 "github.com/k3s-io/helm-controller/pkg/apis/helm.cattle.io/v1"
-	v1 "k8s.io/api/batch/v1"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	vclustersv1alpha1 "openvc.dev/openvc/api/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
-	"time"
+
+	vclustersv1alpha1 "openvc.dev/openvc/api/v1alpha1"
 )
 
 const (
@@ -39,14 +41,6 @@ const (
 	VclusterHelmChart        = "vcluster"
 	VclusterHelmChartVersion = "0.18.1"
 	finalizer                = "opencv.dev/finalizer"
-)
-
-type LIFECYCLE_OP_TYPE string
-
-var (
-	LIFECYCLE_OP_TYPE_CREATE LIFECYCLE_OP_TYPE = "create"
-	LIFECYCLE_OP_TYPE_UPDATE LIFECYCLE_OP_TYPE = "update"
-	LIFECYCLE_OP_TYPE_DELETE LIFECYCLE_OP_TYPE = "delete"
 )
 
 // VClusterReconciler reconciles a VCluster object
@@ -232,7 +226,7 @@ func checkVClusterSecret(ctx context.Context, r *VClusterReconciler, vclusterNam
 
 func checkHelmInstallJobStatus(ctx context.Context, r *VClusterReconciler, helmChartName, helmChartNamespace string) error {
 	var helmChart helmv1.HelmChart
-	var vclusterHelmInstallJob v1.Job
+	var vclusterHelmInstallJob batchv1.Job
 
 	// Get latest Helm chart for status check
 	if err := r.Get(ctx, types.NamespacedName{Name: helmChartName, Namespace: helmChartNamespace}, &helmChart); err != nil {
