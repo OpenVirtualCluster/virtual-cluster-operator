@@ -1,0 +1,31 @@
+# permissions for end users to edit vclusters.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: vcluster-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: openvc
+    app.kubernetes.io/part-of: openvc
+    app.kubernetes.io/managed-by: kustomize
+  name: vcluster-editor-role
+rules:
+- apiGroups:
+  - vclusters.openvc.dev
+  resources:
+  - vclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - vclusters.openvc.dev
+  resources:
+  - vclusters/status
+  verbs:
+  - get
