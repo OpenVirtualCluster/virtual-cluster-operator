@@ -1,5 +1,5 @@
-# openvc
-An operator to create Virtual clusters declaratively
+# virtual-cluster-operator
+An operator to create and manage virtual clusters declaratively.
 
 ## Description
 This operator creates virtual clusters declaratively using upstream Loft helm charts
@@ -16,7 +16,7 @@ This operator creates virtual clusters declaratively using upstream Loft helm ch
 **Build and push your image to the location specified by `IMG`:**
 
 ```sh
-make docker-build docker-push IMG=<some-registry>/openvc:tag
+make docker-build docker-push IMG=<some-registry>/openvirtualcluster:tag
 ```
 
 **NOTE:** This image ought to be published in the personal registry you specified. 
@@ -32,7 +32,7 @@ make install
 **Deploy the Manager to the cluster with the image specified by `IMG`:**
 
 ```sh
-make deploy IMG=<some-registry>/openvc:tag
+make deploy IMG=<some-registry>/openvirtualcluster:tag
 ```
 
 > **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin 

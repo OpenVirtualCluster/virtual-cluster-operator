@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: vclusters.vclusters.openvc.dev
+  name: vclusters.openvirtualcluster.dev
 spec:
-  group: vclusters.openvc.dev
+  group: openvirtualcluster.dev
   names:
     kind: VCluster
     listKind: VClusterList

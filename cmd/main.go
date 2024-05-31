@@ -33,8 +33,8 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
 	helmv1 "github.com/k3s-io/helm-controller/pkg/apis/helm.cattle.io/v1"
-	vclustersv1alpha1 "openvc.dev/openvc/api/v1alpha1"
-	"openvc.dev/openvc/internal/controller"
+	vclustersv1alpha1 "openvirtualcluster.dev/openvirtualcluster/api/v1alpha1"
+	"openvirtualcluster.dev/openvirtualcluster/internal/controller"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -73,7 +73,7 @@ func main() {
 		Metrics:                metricsserver.Options{BindAddress: metricsAddr},
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "5e39a12f.openvc.dev",
+		LeaderElectionID:       "5e39a12f.openvirtualcluster.dev",
 		// LeaderElectionReleaseOnCancel defines if the leader should step down voluntarily
 		// when the Manager ends. This requires the binary to immediately end when the
 		// Manager is stopped, otherwise, this setting is unsafe. Setting this significantly

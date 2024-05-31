@@ -33,7 +33,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	vclustersv1alpha1 "openvc.dev/openvc/api/v1alpha1"
+	vclustersv1alpha1 "openvirtualcluster.dev/openvirtualcluster/api/v1alpha1"
 )
 
 const (
@@ -49,9 +49,9 @@ type VClusterReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=vclusters.openvc.dev,resources=vclusters,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=vclusters.openvc.dev,resources=vclusters/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=vclusters.openvc.dev,resources=vclusters/finalizers,verbs=update
+//+kubebuilder:rbac:groups=vclusters.openvirtualcluster.dev,resources=vclusters,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=vclusters.openvirtualcluster.dev,resources=vclusters/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=vclusters.openvirtualcluster.dev,resources=vclusters/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

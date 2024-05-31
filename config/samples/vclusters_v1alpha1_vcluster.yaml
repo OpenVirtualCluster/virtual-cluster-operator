@@ -1,12 +1,12 @@
-apiVersion: vclusters.openvc.dev/v1alpha1
+apiVersion: vclusters.openvirtualcluster.dev/v1alpha1
 kind: VCluster
 metadata:
   labels:
     app.kubernetes.io/name: vcluster
     app.kubernetes.io/instance: vcluster-sample
-    app.kubernetes.io/part-of: openvc
+    app.kubernetes.io/part-of: openvirtualcluster
     app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/created-by: openvc
+    app.kubernetes.io/created-by: openvirtualcluster
   name: vcluster-prakash
 spec:
   set:

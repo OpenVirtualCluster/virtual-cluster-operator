@@ -32,7 +32,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	vclustersv1alpha1 "openvc.dev/openvc/api/v1alpha1"
+	vclustersv1alpha1 "openvirtualcluster.dev/openvirtualcluster/api/v1alpha1"
 	//+kubebuilder:scaffold:imports
 )
 

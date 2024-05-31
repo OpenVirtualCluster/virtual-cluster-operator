@@ -1,4 +1,4 @@
-module openvc.dev/openvc
+module openvirtualcluster.dev/openvirtualcluster
 
 go 1.20
 

@@ -6,13 +6,13 @@ metadata:
     app.kubernetes.io/name: clusterrole
     app.kubernetes.io/instance: vcluster-viewer-role
     app.kubernetes.io/component: rbac
-    app.kubernetes.io/created-by: openvc
-    app.kubernetes.io/part-of: openvc
+    app.kubernetes.io/created-by: openvirtualcluster
+    app.kubernetes.io/part-of: openvirtualcluster
     app.kubernetes.io/managed-by: kustomize
   name: vcluster-viewer-role
 rules:
 - apiGroups:
-  - vclusters.openvc.dev
+  - vclusters.openvirtualcluster.dev
   resources:
   - vclusters
   verbs:
@@ -20,7 +20,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - vclusters.openvc.dev
+  - vclusters.openvirtualcluster.dev
   resources:
   - vclusters/status
   verbs:
