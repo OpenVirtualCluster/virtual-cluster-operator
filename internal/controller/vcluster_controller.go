@@ -1,19 +1,3 @@
-/*
-Copyright 2024.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package controller
 
 import (
@@ -21,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	helmv1 "github.com/k3s-io/helm-controller/pkg/apis/helm.cattle.io/v1"
-	batchv1 "k8s.io/api/batch/v1"
+	helmv2 "github.com/fluxcd/helm-controller/api/v2beta1"
+	sourcev1 "github.com/fluxcd/source-controller/api/v1beta2"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -39,8 +23,8 @@ import (
 const (
 	VclusterHelmChartRepo    = "https://charts.loft.sh"
 	VclusterHelmChart        = "vcluster"
-	VclusterHelmChartVersion = "0.18.1"
-	finalizer                = "opencv.dev/finalizer"
+	VclusterHelmChartVersion = "0.19.4"
+	finalizer                = "openvirtualcluster.dev/finalizer"
 )
 
 // VClusterReconciler reconciles a VCluster object
@@ -53,22 +37,10 @@ type VClusterReconciler struct {
 //+kubebuilder:rbac:groups=vclusters.openvirtualcluster.dev,resources=vclusters/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=vclusters.openvirtualcluster.dev,resources=vclusters/finalizers,verbs=update
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the VCluster object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.16.3/pkg/reconcile
 func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	var vclusterInstallationHelmChart helmv1.HelmChart
+	var vclusterHelmRelease helmv2.HelmRelease
 
-	// TODO: Break these into multiple reconcile functions and after each step completes successfully,
-	// update status of the CR to ensure that the execution moves to the next reconciliation function
 	log := log.FromContext(ctx)
-
 	log.Info("Received reconcile request for VCluster", "Vcluster name", req.Name, "Vcluster namespace", req.Namespace)
 
 	var vcluster vclustersv1alpha1.VCluster
@@ -81,95 +53,95 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	vclusterInstallationHelmChart = helmv1.HelmChart{
+	// Create or update the HelmRepository
+	helmRepo := &sourcev1.HelmRepository{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "vcluster",
+			Namespace: vcluster.Namespace,
+		},
+		Spec: sourcev1.HelmRepositorySpec{
+			URL: VclusterHelmChartRepo,
+		},
+	}
+	if err := r.CreateOrUpdateHelmRepository(ctx, helmRepo, &vcluster); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	vclusterHelmRelease = helmv2.HelmRelease{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      vcluster.Name,
 			Namespace: vcluster.Namespace,
 		},
-		Spec: helmv1.HelmChartSpec{
-			Repo:        VclusterHelmChartRepo,
-			HelmVersion: VclusterHelmChartVersion,
-			Chart:       VclusterHelmChart,
-			Set:         vcluster.Spec.Set,
+		Spec: helmv2.HelmReleaseSpec{
+			Chart: &helmv2.HelmChartTemplate{
+				Spec: helmv2.HelmChartTemplateSpec{
+					Chart:   VclusterHelmChart,
+					Version: VclusterHelmChartVersion,
+					SourceRef: helmv2.CrossNamespaceObjectReference{
+						Kind:      sourcev1.HelmRepositoryKind,
+						Name:      "vcluster",
+						Namespace: vcluster.Namespace,
+					},
+				},
+			},
+			//ValuesFrom: []helmv2.ValuesReference{
+			//	{
+			//		Kind: helmv2.ValuesKindConfigMap,
+			//		Name: vcluster.Spec.ValuesConfigMap,
+			//	},
+			//},
 		},
-		Status: helmv1.HelmChartStatus{},
+		Status: helmv2.HelmReleaseStatus{},
 	}
 
-	err := r.Get(ctx,
-		types.NamespacedName{
-			Name:      vcluster.Name,
-			Namespace: vcluster.Namespace,
-		},
-		&vclusterInstallationHelmChart,
-	)
+	err := r.Get(ctx, types.NamespacedName{Name: vcluster.Name, Namespace: vcluster.Namespace}, &vclusterHelmRelease)
 	if err != nil && k8serrors.IsNotFound(err) {
-		// Create the chart
-
-		if err := controllerutil.SetControllerReference(&vcluster, &vclusterInstallationHelmChart, r.Scheme); err != nil {
+		if err := controllerutil.SetControllerReference(&vcluster, &vclusterHelmRelease, r.Scheme); err != nil {
 			return ctrl.Result{}, err
 		}
 
-		// Create the helm chart CR
-		err := r.Create(context.Background(), &vclusterInstallationHelmChart)
-		if err != nil {
+		if err := r.Create(ctx, &vclusterHelmRelease); err != nil {
 			return ctrl.Result{}, err
 		}
-		log.Info("Created VCluster helm chart", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+		log.Info("Created VCluster HelmRelease", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 
 		controllerutil.AddFinalizer(&vcluster, finalizer)
-		if err := r.Update(context.Background(), &vcluster); err != nil {
+		if err := r.Update(ctx, &vcluster); err != nil {
 			return ctrl.Result{}, err
 		}
 		log.Info("Added finalizer to VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 	} else if err != nil {
-		log.Error(err, "error in getting VCluster helm chart")
+		log.Error(err, "Error getting VCluster HelmRelease")
 		return ctrl.Result{}, err
 	} else {
-		// Update helm chart
-		log.Info("Updating helm chart for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
-		err = r.Update(ctx, &vclusterInstallationHelmChart)
+		log.Info("Updating HelmRelease for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+		err = r.Update(ctx, &vclusterHelmRelease)
 		if err != nil {
-			log.Error(err, "error updating helm chart for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+			log.Error(err, "Error updating HelmRelease for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 		}
 	}
-	// Update vcluster helm chart info
-	vcluster.Status.HelmChartName = vclusterInstallationHelmChart.Name
-	vcluster.Status.HelmChartNamespace = vclusterInstallationHelmChart.Namespace
-	if err := updateVClusterStatus(ctx, r, vcluster); err != nil {
-		log.Error(err, "error updating helm chart info for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
-	}
 
-	// Handle delete
+	//vcluster.Status.HelmReleaseName = vclusterHelmRelease.Name
+	//vcluster.Status.HelmReleaseNamespace = vclusterHelmRelease.Namespace
+	//if err := updateVClusterStatus(ctx, r, vcluster); err != nil {
+	//	log.Error(err, "Error updating HelmRelease info for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	//}
+
 	if !vcluster.DeletionTimestamp.IsZero() {
 		log.Info("VCluster is being deleted. Cleaning up resources", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 
-		err := r.Delete(context.Background(), &vclusterInstallationHelmChart)
+		err := r.Delete(ctx, &vclusterHelmRelease)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
-		log.Info("VCluster helm chart has been deleted", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+		log.Info("VCluster HelmRelease has been deleted", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 
 		controllerutil.RemoveFinalizer(&vcluster, finalizer)
-		if err := r.Update(context.Background(), &vcluster); err != nil {
-			log.Error(err, "error removing finalizer from VCluster object", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+		if err := r.Update(ctx, &vcluster); err != nil {
+			log.Error(err, "Error removing finalizer from VCluster object", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 			return ctrl.Result{}, err
 		}
 	}
-
-	if !vcluster.Status.JobCompleted {
-		err = checkHelmInstallJobStatus(ctx, r, vclusterInstallationHelmChart.Name, vclusterInstallationHelmChart.Namespace)
-		if err != nil {
-			log.Info("Requeue-ing after 10s as VCluster helm install job has not completed yet", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
-			return ctrl.Result{RequeueAfter: 10 * time.Second}, nil
-		}
-		vcluster.Status.JobCompleted = true
-		err = updateVClusterStatus(ctx, r, vcluster)
-		if err != nil {
-			log.Error(err, "error updating vcluster job completion status", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
-			return ctrl.Result{}, err
-		}
-	}
-	log.Info("Helm install job for VCluster has completed", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 
 	if !vcluster.Status.KubeconfigCreated {
 		kubeconfig, err := checkVClusterSecret(ctx, r, vcluster.Name, vcluster.Namespace)
@@ -178,15 +150,13 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 			return ctrl.Result{RequeueAfter: 30 * time.Second}, nil
 		}
 		log.Info("VCluster access secret has been created. Updating CR status", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
-		// Update kubeconfig in VCluster CR
 		if kubeconfig != nil {
 			vcluster.Status.KubeconfigSecretReference = *kubeconfig
 			vcluster.Status.KubeconfigCreated = true
 
-			// Update VCluster
 			log.Info("Updating VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 			if err := updateVClusterStatus(ctx, r, vcluster); err != nil {
-				log.Error(err, "error updating VCluster Kubeconfig status", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+				log.Error(err, "Error updating VCluster Kubeconfig status", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 				return ctrl.Result{}, err
 			}
 		}
@@ -211,11 +181,9 @@ func checkVClusterSecret(ctx context.Context, r *VClusterReconciler, vclusterNam
 	vclusterSecretName := fmt.Sprintf("vc-%s", vclusterName)
 
 	if err := r.Get(ctx, types.NamespacedName{Name: vclusterSecretName, Namespace: vclusterNamespace}, &vclusterSecret); err != nil {
-		// Check after 30s if secret doesn't exist
 		return nil, err
 	}
 
-	// Got VCluster. Now update the secretRef
 	kubeconfig = corev1.SecretReference{
 		Name:      vclusterSecret.Name,
 		Namespace: vclusterSecret.Namespace,
@@ -224,36 +192,54 @@ func checkVClusterSecret(ctx context.Context, r *VClusterReconciler, vclusterNam
 	return &kubeconfig, nil
 }
 
-func checkHelmInstallJobStatus(ctx context.Context, r *VClusterReconciler, helmChartName, helmChartNamespace string) error {
-	var helmChart helmv1.HelmChart
-	var vclusterHelmInstallJob batchv1.Job
+//func checkHelmInstallJobStatus(ctx context.Context, r *VClusterReconciler, helmReleaseName, helmReleaseNamespace string) error {
+//	var helmRelease helmv2.HelmRelease
+//	var vclusterHelmInstallJob batchv1.Job
+//
+//	if err := r.Get(ctx, types.NamespacedName{Name: helmReleaseName, Namespace: helmReleaseNamespace}, &helmRelease); err != nil {
+//		return err
+//	}
+//
+//	vclusterInstallJobName := helmRelease.Status.
+//	if err := r.Get(ctx, types.NamespacedName{Name: vclusterInstallJobName, Namespace: helmReleaseNamespace}, &vclusterHelmInstallJob); err != nil {
+//		return err
+//	}
+//
+//	if vclusterHelmInstallJob.Status.Active > 0 {
+//		return fmt.Errorf("VCluster helm install job has not completed yet. Job name: %s", vclusterInstallJobName)
+//	}
+//
+//	if vclusterHelmInstallJob.Status.Failed > 0 {
+//		return fmt.Errorf("VCluster helm install job failed. Job name: %s", vclusterInstallJobName)
+//	}
+//
+//	return nil
+//}
 
-	// Get latest Helm chart for status check
-	if err := r.Get(ctx, types.NamespacedName{Name: helmChartName, Namespace: helmChartNamespace}, &helmChart); err != nil {
-		// The Chart object should exist by now
+func (r *VClusterReconciler) CreateOrUpdateHelmRepository(ctx context.Context, helmRepo *sourcev1.HelmRepository, owner *vclustersv1alpha1.VCluster) error {
+	var existingHelmRepo sourcev1.HelmRepository
+	err := r.Get(ctx, types.NamespacedName{Name: helmRepo.Name, Namespace: helmRepo.Namespace}, &existingHelmRepo)
+	if err != nil && k8serrors.IsNotFound(err) {
+		if err := controllerutil.SetControllerReference(owner, helmRepo, r.Scheme); err != nil {
+			return err
+		}
+		if err := r.Create(ctx, helmRepo); err != nil {
+			return err
+		}
+	} else if err != nil {
 		return err
+	} else {
+		helmRepo.ResourceVersion = existingHelmRepo.ResourceVersion
+		if err := r.Update(ctx, helmRepo); err != nil {
+			return err
+		}
 	}
-
-	vclusterInstallJobName := helmChart.Status.JobName
-	if err := r.Get(ctx, types.NamespacedName{Name: vclusterInstallJobName, Namespace: helmChartNamespace}, &vclusterHelmInstallJob); err != nil {
-		return err
-	}
-
-	if vclusterHelmInstallJob.Status.Active > 0 {
-		return fmt.Errorf("VCluster helm install job has not completed yet. Job name: %s", vclusterInstallJobName)
-	}
-
-	if vclusterHelmInstallJob.Status.Failed > 0 {
-		return fmt.Errorf("VCluster helm install job failed. Job name: %s", vclusterInstallJobName)
-	}
-
 	return nil
 }
 
-// SetupWithManager sets up the controller with the Manager.
 func (r *VClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&vclustersv1alpha1.VCluster{}).
-		Owns(&helmv1.HelmChart{}).
+		Owns(&helmv2.HelmRelease{}).
 		Complete(r)
 }

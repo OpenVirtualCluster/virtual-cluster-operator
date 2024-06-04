@@ -1,13 +1,4 @@
 apiVersion: vclusters.openvirtualcluster.dev/v1alpha1
 kind: VCluster
 metadata:
-  labels:
-    app.kubernetes.io/name: vcluster
-    app.kubernetes.io/instance: vcluster-sample
-    app.kubernetes.io/part-of: openvirtualcluster
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/created-by: openvirtualcluster
-  name: vcluster-prakash
-spec:
-  set:
-    syncer.image: "ghcr.io/loft-sh/vcluster:0.18.1"
+  name: vcluster-simple
