@@ -181,7 +181,7 @@ test-e2e-with-tainted-cluster-local: start-test-minikube-tainted test-e2e-with-t
 
 .PHONY: build
 build: manifests generate fmt vet ## Build manager binary.
-	go build -o bin/manager main.go
+	go build -o bin/manager cmd/main.go
 
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
