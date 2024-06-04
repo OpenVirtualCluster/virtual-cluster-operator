@@ -1,4 +1,5 @@
 {
+  "repositoryUrl": "https://github.com/OpenVirtualCluster/virtual-cluster-operator",
   "branches": ["main"],
   "plugins": [
     "@semantic-release/commit-analyzer",
