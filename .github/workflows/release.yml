@@ -53,7 +53,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.RELEASER_GITHUB_PAT }}
           tag_name: ${{ env.RELEASE_VERSION }}
           name: ${{ env.RELEASE_VERSION }}
           generate_release_notes: true
