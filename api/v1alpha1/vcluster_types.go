@@ -3,12 +3,11 @@ package v1alpha1
 import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 // VClusterSpec defines the desired state of VCluster
 type VClusterSpec struct {
-	Set map[string]intstr.IntOrString `json:"set,omitempty"`
+	Sleep bool `json:"sleep,omitempty"`
 }
 
 // VClusterStatus defines the observed state of VCluster

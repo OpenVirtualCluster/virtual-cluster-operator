@@ -7,6 +7,7 @@ import (
 
 	helmv2 "github.com/fluxcd/helm-controller/api/v2beta1"
 	sourcev1 "github.com/fluxcd/source-controller/api/v1beta2"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,6 +26,8 @@ const (
 	VclusterHelmChart        = "vcluster"
 	VclusterHelmChartVersion = "0.19.4"
 	finalizer                = "openvirtualcluster.dev/finalizer"
+	labelManagedBy           = "vcluster.loft.sh/managed-by"
+	labelHelmReleaseName     = "helm.toolkit.fluxcd.io/name"
 )
 
 // VClusterReconciler reconciles a VCluster object
@@ -135,6 +138,21 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		}
 	}
 
+	// Check if the VCluster should sleep
+	if vcluster.Spec.Sleep {
+		log.Info("VCluster is set to sleep. Scaling down related statefulsets and deleting related pods", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+		if err := r.ScaleDownVClusterResources(ctx, vcluster); err != nil {
+			log.Error(err, "Error scaling down resources for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+			return ctrl.Result{}, err
+		}
+	} else {
+		log.Info("VCluster is awake. Scaling up related statefulsets", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+		if err := r.ScaleUpVClusterResources(ctx, vcluster); err != nil {
+			log.Error(err, "Error scaling up resources for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+			return ctrl.Result{}, err
+		}
+	}
+
 	if !vcluster.Status.KubeconfigCreated {
 		kubeconfig, err := checkVClusterSecret(ctx, r, vcluster.Name, vcluster.Namespace)
 		if err != nil {
@@ -175,6 +193,75 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	log.Info("Done reconciling VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 	return ctrl.Result{}, nil
+}
+
+func (r *VClusterReconciler) ScaleDownVClusterResources(ctx context.Context, vcluster vclustersv1alpha1.VCluster) error {
+	log := log.FromContext(ctx)
+
+	// Scale down the StatefulSet with the labelHelmReleaseName label
+	var statefulsets appsv1.StatefulSetList
+	labels := client.MatchingLabels{labelHelmReleaseName: vcluster.Name}
+	if err := r.List(ctx, &statefulsets, client.InNamespace(vcluster.Namespace), labels); err != nil {
+		return err
+	}
+
+	if len(statefulsets.Items) == 0 {
+		log.Info("No statefulsets found for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	} else {
+		for _, statefulset := range statefulsets.Items {
+			statefulset.Spec.Replicas = new(int32) // Set replicas to 0
+			if err := r.Update(ctx, &statefulset); err != nil {
+				return err
+			}
+		}
+		log.Info("Scaled down statefulsets for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	}
+
+	// Delete Pods with the labelManagedBy label
+	var pods corev1.PodList
+	labels = client.MatchingLabels{labelManagedBy: vcluster.Name}
+	if err := r.List(ctx, &pods, client.InNamespace(vcluster.Namespace), labels); err != nil {
+		return err
+	}
+
+	if len(pods.Items) == 0 {
+		log.Info("No pods found for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	} else {
+		for _, pod := range pods.Items {
+			if err := r.Delete(ctx, &pod); err != nil {
+				return err
+			}
+		}
+		log.Info("Deleted pods for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	}
+
+	return nil
+}
+
+func (r *VClusterReconciler) ScaleUpVClusterResources(ctx context.Context, vcluster vclustersv1alpha1.VCluster) error {
+	log := log.FromContext(ctx)
+
+	// Scale up the StatefulSet with the labelHelmReleaseName label
+	var statefulsets appsv1.StatefulSetList
+	labels := client.MatchingLabels{labelHelmReleaseName: vcluster.Name}
+	if err := r.List(ctx, &statefulsets, client.InNamespace(vcluster.Namespace), labels); err != nil {
+		return err
+	}
+
+	if len(statefulsets.Items) == 0 {
+		log.Info("No statefulsets found for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	} else {
+		for _, statefulset := range statefulsets.Items {
+			replicas := int32(1) // Set desired number of replicas
+			statefulset.Spec.Replicas = &replicas
+			if err := r.Update(ctx, &statefulset); err != nil {
+				return err
+			}
+		}
+		log.Info("Scaled up statefulsets for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	}
+
+	return nil
 }
 
 func updateVClusterStatus(ctx context.Context, r *VClusterReconciler, vcluster vclustersv1alpha1.VCluster) error {
