@@ -53,7 +53,11 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	// Create or update the HelmRepository
+	// Ensure conditions field is initialized
+	if vcluster.Status.Conditions == nil {
+		vcluster.Status.Conditions = []metav1.Condition{}
+	}
+
 	helmRepo := &sourcev1.HelmRepository{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "vcluster",
@@ -84,12 +88,6 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 					},
 				},
 			},
-			//ValuesFrom: []helmv2.ValuesReference{
-			//	{
-			//		Kind: helmv2.ValuesKindConfigMap,
-			//		Name: vcluster.Spec.ValuesConfigMap,
-			//	},
-			//},
 		},
 		Status: helmv2.HelmReleaseStatus{},
 	}
@@ -121,12 +119,6 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		}
 	}
 
-	//vcluster.Status.HelmReleaseName = vclusterHelmRelease.Name
-	//vcluster.Status.HelmReleaseNamespace = vclusterHelmRelease.Namespace
-	//if err := updateVClusterStatus(ctx, r, vcluster); err != nil {
-	//	log.Error(err, "Error updating HelmRelease info for VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
-	//}
-
 	if !vcluster.DeletionTimestamp.IsZero() {
 		log.Info("VCluster is being deleted. Cleaning up resources", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 
@@ -151,7 +143,7 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		}
 		log.Info("VCluster access secret has been created. Updating CR status", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 		if kubeconfig != nil {
-			vcluster.Status.KubeconfigSecretReference = *kubeconfig
+			vcluster.Status.KubeconfigSecretReference = kubeconfig
 			vcluster.Status.KubeconfigCreated = true
 
 			log.Info("Updating VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
@@ -162,6 +154,24 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		}
 	}
 	log.Info("Kubeconfig for VCluster has been created", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+
+	// Update VCluster status to mirror HelmRelease status
+	vcluster.Status.Conditions = []metav1.Condition{}
+	for _, condition := range vclusterHelmRelease.Status.Conditions {
+		vcluster.Status.Conditions = append(vcluster.Status.Conditions, metav1.Condition{
+			Type:               "Helm" + condition.Type,
+			Status:             condition.Status,
+			LastTransitionTime: condition.LastTransitionTime,
+			Reason:             condition.Reason,
+			Message:            condition.Message,
+		})
+	}
+
+	log.Info("Updating VCluster status to mirror HelmRelease status", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+	if err := updateVClusterStatus(ctx, r, vcluster); err != nil {
+		log.Error(err, "Error updating VCluster status", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
+		return ctrl.Result{}, err
+	}
 
 	log.Info("Done reconciling VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 	return ctrl.Result{}, nil
@@ -191,30 +201,6 @@ func checkVClusterSecret(ctx context.Context, r *VClusterReconciler, vclusterNam
 
 	return &kubeconfig, nil
 }
-
-//func checkHelmInstallJobStatus(ctx context.Context, r *VClusterReconciler, helmReleaseName, helmReleaseNamespace string) error {
-//	var helmRelease helmv2.HelmRelease
-//	var vclusterHelmInstallJob batchv1.Job
-//
-//	if err := r.Get(ctx, types.NamespacedName{Name: helmReleaseName, Namespace: helmReleaseNamespace}, &helmRelease); err != nil {
-//		return err
-//	}
-//
-//	vclusterInstallJobName := helmRelease.Status.
-//	if err := r.Get(ctx, types.NamespacedName{Name: vclusterInstallJobName, Namespace: helmReleaseNamespace}, &vclusterHelmInstallJob); err != nil {
-//		return err
-//	}
-//
-//	if vclusterHelmInstallJob.Status.Active > 0 {
-//		return fmt.Errorf("VCluster helm install job has not completed yet. Job name: %s", vclusterInstallJobName)
-//	}
-//
-//	if vclusterHelmInstallJob.Status.Failed > 0 {
-//		return fmt.Errorf("VCluster helm install job failed. Job name: %s", vclusterInstallJobName)
-//	}
-//
-//	return nil
-//}
 
 func (r *VClusterReconciler) CreateOrUpdateHelmRepository(ctx context.Context, helmRepo *sourcev1.HelmRepository, owner *vclustersv1alpha1.VCluster) error {
 	var existingHelmRepo sourcev1.HelmRepository

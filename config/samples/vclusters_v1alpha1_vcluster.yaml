@@ -1,4 +1,4 @@
 apiVersion: vclusters.openvirtualcluster.dev/v1alpha1
 kind: VCluster
 metadata:
-  name: vcluster-simple
+  name: basic
