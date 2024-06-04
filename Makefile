@@ -1,6 +1,6 @@
 VERSION ?= 0.0.1
 
-IMAGE_TAG_BASE ?= docker.io/OpenVirtualCluster/ovc-operator
+IMAGE_TAG_BASE ?= docker.io/openvirtualcluster/ovc-operator
 # Image URL to use all building/pushing image targets
 IMG ?= $(IMAGE_TAG_BASE):v$(VERSION)
 LATEST_IMG ?= $(IMAGE_TAG_BASE):latest
