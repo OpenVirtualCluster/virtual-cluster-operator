@@ -21,9 +21,6 @@ jobs:
       - name: Install dependencies
         run: go mod tidy
 
-      - name: Build the operator
-        run: go build -o bin/operator ./cmd/operator
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -34,7 +31,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/operator
+          images: OpenVirtualCluster/operator
           tags: |
             type=sha
 
