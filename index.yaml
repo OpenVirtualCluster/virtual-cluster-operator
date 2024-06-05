@@ -6,7 +6,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 2.19.3
-    created: "2024-06-05T13:47:04.030892323Z"
+    created: "2024-06-05T13:48:32.569668426Z"
     description: A Library Helm Chart for grouping common logic between bitnami charts.
       This chart is not deployable by itself.
     digest: e009fa62d2b39892337d7bd5be9cdcc0108393f5ba27810c403dc63e8f78c17a
@@ -49,7 +49,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 0.36.1
-    created: "2024-06-05T13:47:04.038048175Z"
+    created: "2024-06-05T13:48:32.578312436Z"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -82,8 +82,8 @@ entries:
       artifacthub.io/category: integration-delivery
       artifacthub.io/prerelease: "false"
     apiVersion: v2
-    appVersion: v0.0.3
-    created: "2024-06-05T13:47:04.030202775Z"
+    appVersion: v0.0.4
+    created: "2024-06-05T13:48:32.568678365Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -92,7 +92,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 0.x.x
     description: A Helm chart for deploying the Virtual Cluster Operator
-    digest: 129538699075272fb1c4c01ac8a7e7592164a02ae14c2753e4d47b90a5dc5463
+    digest: f3c3c30f8162af1d99dd3e0ed61ce395d896a6b985084ac9e99e7e53e860c8b9
     home: https://openvirtualcluster.dev/
     keywords:
     - ephemeral-environments
@@ -105,6 +105,6 @@ entries:
     - https://github.com/OpenVirtualCluster/virtual-cluster-operator
     type: application
     urls:
-    - https://openvirtualcluster.github.io/virtual-cluster-operator/virtual-cluster-operator-0.0.3.tgz
-    version: 0.0.3
-generated: "2024-06-05T13:47:04.020712854Z"
+    - https://openvirtualcluster.github.io/virtual-cluster-operator/virtual-cluster-operator-0.0.4.tgz
+    version: 0.0.4
+generated: "2024-06-05T13:48:32.560273672Z"
