@@ -243,14 +243,16 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 build-helm-chart: manifests generate fmt vet kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	# update the crd
 	$(KUSTOMIZE) build config/crd > chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
-	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+	# Remove existing controller-gen annotation
+	$(SED) -i'' -e '/annotations:/,/^[[:space:]]*[^[:space:]]/d' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	$(SED) -i'' -e '/metadata:/a\
 	\  annotations:\
-	\    meta.helm.sh/release-name: {{ .Release.Name }}\
-	\    meta.helm.sh/release-namespace: {{ .Release.Namespace }}' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+	\n    meta.helm.sh/release-name: {{ .Release.Name }}\
+	\n    meta.helm.sh/release-namespace: {{ .Release.Namespace }}\
+	\n    controller-gen.kubebuilder.io/version: v0.13.0' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	$(SED) -i'' -e '/metadata:/a\
 	\  labels:\
-	\    app.kubernetes.io/managed-by: Helm' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+	\n    app.kubernetes.io/managed-by: Helm' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	# update roles
 	cp config/rbac/role.yaml chart/templates/manager-role_clusterrole.yaml
 	$(SED) -i'' -e '/creationTimestamp: null/d' chart/templates/manager-role_clusterrole.yaml
