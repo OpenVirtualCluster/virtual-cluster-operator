@@ -6,7 +6,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 2.19.3
-    created: "2024-06-05T17:39:22.57148+05:30"
+    created: "2024-06-05T18:16:49.891545+05:30"
     description: A Library Helm Chart for grouping common logic between bitnami charts.
       This chart is not deployable by itself.
     digest: e009fa62d2b39892337d7bd5be9cdcc0108393f5ba27810c403dc63e8f78c17a
@@ -26,7 +26,7 @@ entries:
     - https://github.com/bitnami/charts
     type: library
     urls:
-    - https://openvirtualcluster.github.io/charts/common-2.19.3.tgz
+    - https://openvirtualcluster.github.io/virtual-cluster-operator/charts/common-2.19.3.tgz
     version: 2.19.3
   flux:
   - annotations:
@@ -49,7 +49,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 0.36.1
-    created: "2024-06-05T17:39:22.576521+05:30"
+    created: "2024-06-05T18:16:49.896772+05:30"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -75,7 +75,7 @@ entries:
     sources:
     - https://github.com/bitnami/charts/tree/main/bitnami/flux
     urls:
-    - https://openvirtualcluster.github.io/charts/flux-0.4.1.tgz
+    - https://openvirtualcluster.github.io/virtual-cluster-operator/charts/flux-0.4.1.tgz
     version: 0.4.1
   virtual-cluster-operator:
   - annotations:
@@ -83,7 +83,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: v0.0.3
-    created: "2024-06-05T17:39:22.570505+05:30"
+    created: "2024-06-05T18:16:49.890775+05:30"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -105,6 +105,6 @@ entries:
     - https://github.com/OpenVirtualCluster/virtual-cluster-operator
     type: application
     urls:
-    - https://openvirtualcluster.github.io/virtual-cluster-operator-0.0.3.tgz
+    - https://openvirtualcluster.github.io/virtual-cluster-operator/virtual-cluster-operator-0.0.3.tgz
     version: 0.0.3
-generated: "2024-06-05T17:39:22.563684+05:30"
+generated: "2024-06-05T18:16:49.883188+05:30"
