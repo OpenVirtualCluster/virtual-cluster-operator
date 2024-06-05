@@ -33,12 +33,6 @@ spec:
               submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           metadata:
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
-    controller-gen.kubebuilder.io/version: v0.13.0
-  labels:
-    app.kubernetes.io/managed-by: Helm
             type: object
           spec:
             description: VClusterSpec defines the desired state of VCluster

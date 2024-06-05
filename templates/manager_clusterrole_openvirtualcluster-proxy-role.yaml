@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: clusterrole
     app.kubernetes.io/part-of: openvirtualcluster
-  name: openvirtualcluster-proxy-role
+  name: '{{ include "common.names.fullname" . }}-proxy-role'
   namespace: '{{ .Release.Namespace }}'
 rules:
   - apiGroups:

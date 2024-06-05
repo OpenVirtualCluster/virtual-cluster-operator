@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/name: service
     app.kubernetes.io/part-of: openvirtualcluster
     control-plane: controller-manager
-  name: openvirtualcluster-controller-manager-metrics-service
+  name: '{{ include "common.names.fullname" . }}-controller-manager-metrics-service'
   namespace: '{{ .Release.Namespace }}'
 spec:
   ports:

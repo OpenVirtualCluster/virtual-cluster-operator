@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: clusterrolebinding
     app.kubernetes.io/part-of: openvirtualcluster
-  name: openvirtualcluster-manager-rolebinding
+  name: '{{ include "common.names.fullname" . }}-manager-rolebinding'
   namespace: '{{ .Release.Namespace }}'
 roleRef:
   apiGroup: rbac.authorization.k8s.io

@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: openvirtualcluster-manager-role
+  name: '{{ include "common.names.fullname" . }}-manager-role'
   namespace: '{{ .Release.Namespace }}'
 rules:
   - apiGroups:
