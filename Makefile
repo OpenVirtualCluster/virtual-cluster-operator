@@ -244,14 +244,14 @@ build-helm-chart: manifests generate fmt vet kustomize ## Deploy controller to t
 	# update the crd
 	$(KUSTOMIZE) build config/crd > chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	# Remove existing controller-gen annotation
-	$(SED) -i'' -e '/annotations:/,/^[[:space:]]*[^[:space:]]/d' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+	$(SED) -i'' -e '/annotations:/,/^[[:space:]]*[^[:space:]]/d' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	$(SED) -i'' -e '/metadata:/a\
 	\  annotations:\
 	\n    meta.helm.sh/release-name: {{ .Release.Name }}\
 	\n    meta.helm.sh/release-namespace: {{ .Release.Namespace }}\
-	\n    controller-gen.kubebuilder.io/version: v0.13.0' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
-	$(SED) -i'' -e '/metadata:/a\
-	\  labels:\
+	\n    controller-gen.kubebuilder.io/version: v0.13.0\
+	\n  labels:\
 	\n    app.kubernetes.io/managed-by: Helm' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	# update roles
 	cp config/rbac/role.yaml chart/templates/manager-role_clusterrole.yaml
