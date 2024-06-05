@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: rolebinding
     app.kubernetes.io/part-of: openvirtualcluster
-  name: openvirtualcluster-leader-election-rolebinding
+  name: '{{ include "common.names.fullname" . }}-leader-election-rolebinding'
   namespace: '{{ .Release.Namespace }}'
 roleRef:
   apiGroup: rbac.authorization.k8s.io

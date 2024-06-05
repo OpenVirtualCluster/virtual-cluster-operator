@@ -260,28 +260,37 @@ build-helm-chart: manifests generate fmt vet kustomize
 	\n  labels:\
 	\n    app.kubernetes.io/managed-by: Helm' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 
-	# update roles
-	cp config/rbac/role.yaml chart/templates/manager-role_clusterrole.yaml
-	$(SED) -i'' -e '/creationTimestamp: null/d' chart/templates/manager-role_clusterrole.yaml
-	$(SED) -i'' -e 's/name: manager-role/name: {{ include "common.names.fullname" . }}-manager-role/' chart/templates/manager-role_clusterrole.yaml
-	$(SED) -i'' -e 's/apiVersion: rbac.authorization.k8s.io\/v1/apiVersion: {{ include "common.capabilities.rbac.apiVersion" . }}/' chart/templates/manager-role_clusterrole.yaml
-	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/manager-role_clusterrole.yaml
-	$(SED) -i'' -e '/metadata:/a\
-	\  labels: {{ include "common.labels.standard" . | nindent 4 }}\
-	\n    app.kubernetes.io/component: rbac\
-	\n    app.kubernetes.io/part-of: openvirtualcluster' chart/templates/manager-role_clusterrole.yaml
+#	# update roles
+#	cp config/rbac/role.yaml chart/templates/manager-role_clusterrole.yaml
+#	$(SED) -i'' -e '/creationTimestamp: null/d' chart/templates/manager-role_clusterrole.yaml
+#	$(SED) -i'' -e 's/name: manager-role/name: {{ include "common.names.fullname" . }}-manager-role/' chart/templates/manager-role_clusterrole.yaml
+#	$(SED) -i'' -e 's/apiVersion: rbac.authorization.k8s.io\/v1/apiVersion: {{ include "common.capabilities.rbac.apiVersion" . }}/' chart/templates/manager-role_clusterrole.yaml
+#	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/manager-role_clusterrole.yaml
+#	$(SED) -i'' -e '/metadata:/a\
+#	\  labels: {{ include "common.labels.standard" . | nindent 4 }}\
+#	\n    app.kubernetes.io/component: rbac\
+#	\n    app.kubernetes.io/part-of: openvirtualcluster' chart/templates/manager-role_clusterrole.yaml
 
 	# update chart versions
 	yq e -i '.version = "${VERSION}"' chart/Chart.yaml
 	yq e -i '.appVersion = "v${VERSION}"' chart/Chart.yaml
 	yq e -i '.image.tag = "v${VERSION}"' chart/values.yaml
 
-	# set metadata.namespace in all templates
+	# set metadata.namespace and update metadata.name in all templates
 	for file in chart/templates/manager_*.yaml; do \
 		if yq e 'has("metadata")' $$file; then \
 			yq e -i '.metadata.namespace = "{{ .Release.Namespace }}"' $$file; \
+			if yq e '.metadata.name | test("^openvirtualcluster")' $$file; then \
+				yq e -i '.metadata.name |= sub("^openvirtualcluster", "{{ include \"common.names.fullname\" . }}")' $$file; \
+			fi; \
 		fi; \
 	done
+
+	# Extract the service account name from manager_serviceaccount
+	SERVICE_ACCOUNT_NAME="$(shell yq e '.metadata.name' chart/templates/manager_serviceaccount_openvirtualcluster-controller-manager.yaml)"
+	yq e -i '.spec.template.spec.serviceAccountName = "'$$SERVICE_ACCOUNT_NAME'"' chart/templates/manager_deployment_kube-rbac-proxy.yaml; \
+    sed -i'' -E "s|image: controller:latest|image: 'docker.io/openvirtualcluster/operator:{{ .Values.image.tag }}'|" "chart/templates/manager_deployment_kube-rbac-proxy.yaml"
+
 
 .PHONY: helm-lint
 helm-lint: ## Lint the helm chart.
