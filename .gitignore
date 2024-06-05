@@ -26,3 +26,6 @@ Dockerfile.cross
 *~
 
 node_modules/
+
+charts/
+*.tgz

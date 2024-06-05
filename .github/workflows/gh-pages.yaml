@@ -16,6 +16,11 @@ jobs:
       - name: Setup Helm
         uses: azure/setup-helm@v1
 
+      - name: Package Helm Chart
+        run: |
+          helm dep update ./chart
+          helm package ./chart -d ./chart
+
       - name: Build Helm Index
         run: helm repo index ./chart --url https://charts.openvirtualcluster.dev
 
