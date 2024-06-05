@@ -1,0 +1,32 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: openvirtualcluster-manager-role
+  namespace: '{{ .Release.Namespace }}'
+rules:
+  - apiGroups:
+      - vclusters.openvirtualcluster.dev
+    resources:
+      - vclusters
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - vclusters.openvirtualcluster.dev
+    resources:
+      - vclusters/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - vclusters.openvirtualcluster.dev
+    resources:
+      - vclusters/status
+    verbs:
+      - get
+      - patch
+      - update
