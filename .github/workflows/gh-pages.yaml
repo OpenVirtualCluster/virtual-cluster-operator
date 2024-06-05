@@ -24,7 +24,7 @@ jobs:
           helm package ./chart -d ./chart
 
       - name: Build Helm Index
-        run: helm repo index ./chart --url https://charts.openvirtualcluster.dev/virtual-cluster-operator
+        run: helm repo index ./chart --url https://openvirtualcluster.github.io
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
