@@ -244,6 +244,13 @@ build-helm-chart: manifests generate fmt vet kustomize ## Deploy controller to t
 	# update the crd
 	$(KUSTOMIZE) build config/crd > chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+	$(SED) -i'' -e '/metadata:/a\
+	\  annotations:\
+	\    meta.helm.sh/release-name: {{ .Release.Name }}\
+	\    meta.helm.sh/release-namespace: {{ .Release.Namespace }}' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+	$(SED) -i'' -e '/metadata:/a\
+	\  labels:\
+	\    app.kubernetes.io/managed-by: Helm' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	# update roles
 	cp config/rbac/role.yaml chart/templates/manager-role_clusterrole.yaml
 	$(SED) -i'' -e '/creationTimestamp: null/d' chart/templates/manager-role_clusterrole.yaml
