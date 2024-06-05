@@ -240,7 +240,13 @@ undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/confi
 	$(KUSTOMIZE) build config/default | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
 
 .PHONY: build-helm-chart
-build-helm-chart: manifests generate fmt vet kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+build-helm-chart: manifests generate fmt vet kustomize
+	# Generate the combined manager.yaml
+	$(KUSTOMIZE) build config/default > chart/templates/manager.yaml
+	$(SPLIT_YAML)
+	rm -f chart/templates/manager.yaml
+	rm -f chart/templates/manager_namespace*
+
 	# update the crd
 	$(KUSTOMIZE) build config/crd > chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 	# Remove existing controller-gen annotation
@@ -253,6 +259,7 @@ build-helm-chart: manifests generate fmt vet kustomize ## Deploy controller to t
 	\n    controller-gen.kubebuilder.io/version: v0.13.0\
 	\n  labels:\
 	\n    app.kubernetes.io/managed-by: Helm' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
+
 	# update roles
 	cp config/rbac/role.yaml chart/templates/manager-role_clusterrole.yaml
 	$(SED) -i'' -e '/creationTimestamp: null/d' chart/templates/manager-role_clusterrole.yaml
@@ -263,10 +270,18 @@ build-helm-chart: manifests generate fmt vet kustomize ## Deploy controller to t
 	\  labels: {{ include "common.labels.standard" . | nindent 4 }}\
 	\n    app.kubernetes.io/component: rbac\
 	\n    app.kubernetes.io/part-of: openvirtualcluster' chart/templates/manager-role_clusterrole.yaml
+
 	# update chart versions
 	yq e -i '.version = "${VERSION}"' chart/Chart.yaml
 	yq e -i '.appVersion = "v${VERSION}"' chart/Chart.yaml
 	yq e -i '.image.tag = "v${VERSION}"' chart/values.yaml
+
+	# set metadata.namespace in all templates
+	for file in chart/templates/manager_*.yaml; do \
+		if yq e 'has("metadata")' $$file; then \
+			yq e -i '.metadata.namespace = "{{ .Release.Namespace }}"' $$file; \
+		fi; \
+	done
 
 .PHONY: helm-lint
 helm-lint: ## Lint the helm chart.
@@ -284,6 +299,7 @@ $(LOCALBIN):
 KUSTOMIZE ?= $(LOCALBIN)/kustomize
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
+SPLIT_YAML ?= hack/split_yaml.sh
 
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v5.2.1
