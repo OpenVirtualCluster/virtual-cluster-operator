@@ -6,7 +6,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 2.20.0
-    created: "2024-06-05T22:56:24.643985269Z"
+    created: "2024-06-05T23:00:31.0991642Z"
     description: A Library Helm Chart for grouping common logic between bitnami charts.
       This chart is not deployable by itself.
     digest: 82585d51e1013a447e4cb8bdb9eb378681d246a69266fda99c85d1d5d15a113c
@@ -26,7 +26,7 @@ entries:
     - https://github.com/bitnami/charts/tree/main/bitnami/common
     type: library
     urls:
-    - https://charts.openvirtualcluster.dev/virtual-cluster-operator/charts/common-2.20.0.tgz
+    - https://charts.openvirtualcluster.dev/charts/common-2.20.0.tgz
     version: 2.20.0
   flux:
   - annotations:
@@ -49,7 +49,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 0.36.1
-    created: "2024-06-05T22:56:24.6510341Z"
+    created: "2024-06-05T23:00:31.106408079Z"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -75,7 +75,7 @@ entries:
     sources:
     - https://github.com/bitnami/charts/tree/main/bitnami/flux
     urls:
-    - https://charts.openvirtualcluster.dev/virtual-cluster-operator/charts/flux-0.4.1.tgz
+    - https://charts.openvirtualcluster.dev/charts/flux-0.4.1.tgz
     version: 0.4.1
   virtual-cluster-operator:
   - annotations:
@@ -83,7 +83,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: v0.0.4
-    created: "2024-06-05T22:56:24.643323239Z"
+    created: "2024-06-05T23:00:31.098477953Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -92,7 +92,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 0.x.x
     description: A Helm chart for deploying the Virtual Cluster Operator
-    digest: 6b024a7b1539a74c64bd9d867522e8b9866cd482d0d32e413a1c49ab6d8ac17a
+    digest: 6c5fe12bd03b146accea63430d43baf6d4ef9c8fc7c6996d840b9031162f88eb
     home: https://openvirtualcluster.dev/
     keywords:
     - ephemeral-environments
@@ -105,6 +105,6 @@ entries:
     - https://github.com/OpenVirtualCluster/virtual-cluster-operator
     type: application
     urls:
-    - https://charts.openvirtualcluster.dev/virtual-cluster-operator/virtual-cluster-operator-0.0.4.tgz
+    - https://charts.openvirtualcluster.dev/virtual-cluster-operator-0.0.4.tgz
     version: 0.0.4
-generated: "2024-06-05T22:56:24.634832157Z"
+generated: "2024-06-05T23:00:31.088919375Z"
