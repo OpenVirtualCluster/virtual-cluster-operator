@@ -6,7 +6,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 2.19.3
-    created: "2024-06-06T03:53:39.168139+05:30"
+    created: "2024-06-06T04:29:53.091659+05:30"
     description: A Library Helm Chart for grouping common logic between bitnami charts.
       This chart is not deployable by itself.
     digest: e009fa62d2b39892337d7bd5be9cdcc0108393f5ba27810c403dc63e8f78c17a
@@ -26,7 +26,7 @@ entries:
     - https://github.com/bitnami/charts
     type: library
     urls:
-    - https://charts.openvirtualcluster.dev/virtual-cluster-operator/charts/common-2.19.3.tgz
+    - https://charts.openvirtualcluster.dev/charts/common-2.19.3.tgz
     version: 2.19.3
   flux:
   - annotations:
@@ -49,7 +49,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 0.36.1
-    created: "2024-06-06T03:53:39.172525+05:30"
+    created: "2024-06-06T04:29:53.096123+05:30"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -75,7 +75,7 @@ entries:
     sources:
     - https://github.com/bitnami/charts/tree/main/bitnami/flux
     urls:
-    - https://charts.openvirtualcluster.dev/virtual-cluster-operator/charts/flux-0.4.1.tgz
+    - https://charts.openvirtualcluster.dev/charts/flux-0.4.1.tgz
     version: 0.4.1
   virtual-cluster-operator:
   - annotations:
@@ -83,7 +83,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: v0.0.3
-    created: "2024-06-06T03:53:39.167397+05:30"
+    created: "2024-06-06T04:29:53.09103+05:30"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -105,6 +105,6 @@ entries:
     - https://github.com/OpenVirtualCluster/virtual-cluster-operator
     type: application
     urls:
-    - https://charts.openvirtualcluster.dev/virtual-cluster-operator/virtual-cluster-operator-0.0.3.tgz
+    - https://charts.openvirtualcluster.dev/virtual-cluster-operator-0.0.3.tgz
     version: 0.0.3
-generated: "2024-06-06T03:53:39.15936+05:30"
+generated: "2024-06-06T04:29:53.083632+05:30"
