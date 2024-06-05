@@ -1,0 +1,35 @@
+---
+apiVersion: {{ include "common.capabilities.rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  labels: {{ include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: openvirtualcluster
+  name: {{ include "common.names.fullname" . }}-manager-role
+rules:
+- apiGroups:
+  - vclusters.openvirtualcluster.dev
+  resources:
+  - vclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - vclusters.openvirtualcluster.dev
+  resources:
+  - vclusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - vclusters.openvirtualcluster.dev
+  resources:
+  - vclusters/status
+  verbs:
+  - get
+  - patch
+  - update
