@@ -15,7 +15,7 @@ This operator creates virtual clusters declaratively using upstream Loft helm ch
 
 ### To Deploy on the cluster
 ```sh
-helm repo add ovc-vco https://charts.openvirtualcluster.dev/virtual-cluster-operator
+helm repo add ovc-vco https://charts.openvirtualcluster.dev
 helm repo update
 helm install vco ovc-vco/virtual-cluster-operator
 ```
