@@ -16,5 +16,5 @@ roleRef:
   name: openvirtualcluster-manager-role
 subjects:
   - kind: ServiceAccount
-    name: openvirtualcluster-controller-manager
-    namespace: openvirtualcluster-system
+    name: '{{ include "common.names.fullname" . }}-controller-manager'
+    namespace: '{{ .Release.Namespace }}'
