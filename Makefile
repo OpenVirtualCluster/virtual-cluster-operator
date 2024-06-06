@@ -260,17 +260,6 @@ build-helm-chart: manifests generate fmt vet kustomize
 	\n  labels:\
 	\n    app.kubernetes.io/managed-by: Helm' chart/templates/vclusters.openvirtualcluster.dev_customresourcedefinition.yaml
 
-#	# update roles
-#	cp config/rbac/role.yaml chart/templates/manager-role_clusterrole.yaml
-#	$(SED) -i'' -e '/creationTimestamp: null/d' chart/templates/manager-role_clusterrole.yaml
-#	$(SED) -i'' -e 's/name: manager-role/name: {{ include "common.names.fullname" . }}-manager-role/' chart/templates/manager-role_clusterrole.yaml
-#	$(SED) -i'' -e 's/apiVersion: rbac.authorization.k8s.io\/v1/apiVersion: {{ include "common.capabilities.rbac.apiVersion" . }}/' chart/templates/manager-role_clusterrole.yaml
-#	$(SED) -i'' -e 's/labels:/labels: {{ include "common.labels.standard" . | nindent 4 }}/' chart/templates/manager-role_clusterrole.yaml
-#	$(SED) -i'' -e '/metadata:/a\
-#	\  labels: {{ include "common.labels.standard" . | nindent 4 }}\
-#	\n    app.kubernetes.io/component: rbac\
-#	\n    app.kubernetes.io/part-of: openvirtualcluster' chart/templates/manager-role_clusterrole.yaml
-
 	# update chart versions
 	yq e -i '.version = "${VERSION}"' chart/Chart.yaml
 	yq e -i '.appVersion = "v${VERSION}"' chart/Chart.yaml
@@ -287,9 +276,16 @@ build-helm-chart: manifests generate fmt vet kustomize
 	done
 
 	# Extract the service account name from manager_serviceaccount
-	SERVICE_ACCOUNT_NAME="$(shell yq e '.metadata.name' chart/templates/manager_serviceaccount_openvirtualcluster-controller-manager.yaml)"
-	yq e -i '.spec.template.spec.serviceAccountName = "'$$SERVICE_ACCOUNT_NAME'"' chart/templates/manager_deployment_kube-rbac-proxy.yaml; \
-    sed -i'' -E "s|image: controller:latest|image: 'docker.io/openvirtualcluster/operator:{{ .Values.image.tag }}'|" "chart/templates/manager_deployment_kube-rbac-proxy.yaml"
+	SERVICE_ACCOUNT_NAME="$(shell yq e '.metadata.name' chart/templates/manager_serviceaccount_openvirtualcluster-controller-manager.yaml)" \
+	export SERVICE_ACCOUNT_NAME; \
+	# Update the service account name in the deployment and bindings
+	yq e -i '(.spec.template.spec.serviceAccountName) = strenv(SERVICE_ACCOUNT_NAME)' chart/templates/manager_deployment_kube-rbac-proxy.yaml
+	for file in chart/templates/manager_rolebinding*.yaml chart/templates/manager_clusterrolebinding*.yaml; do \
+		echo $$file > /dev/null; \
+        yq e -i '.subjects[] |= (select(.kind == "ServiceAccount") | .name = strenv(SERVICE_ACCOUNT_NAME) | .namespace = "{{ .Release.Namespace }}")' $$file; \
+    done
+	# Update the image tag in the manager_deployment_kube-rbac-proxy.yaml
+	sed -i '' -E "s|image: controller:latest|image: 'docker.io/openvirtualcluster/operator:{{ .Values.image.tag }}'|" "chart/templates/manager_deployment_kube-rbac-proxy.yaml"
 
 
 .PHONY: helm-lint
