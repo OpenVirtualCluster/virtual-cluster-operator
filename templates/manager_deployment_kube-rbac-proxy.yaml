@@ -81,5 +81,5 @@ spec:
                 - ALL
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: ""
+      serviceAccountName: '{{ include "common.names.fullname" . }}-controller-manager'
       terminationGracePeriodSeconds: 10
