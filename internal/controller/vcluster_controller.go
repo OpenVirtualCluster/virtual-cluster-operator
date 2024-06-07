@@ -40,6 +40,37 @@ type VClusterReconciler struct {
 //+kubebuilder:rbac:groups=vclusters.openvirtualcluster.dev,resources=vclusters/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=vclusters.openvirtualcluster.dev,resources=vclusters/finalizers,verbs=update
 
+// add the helm controller rbac
+//+kubebuilder:rbac:groups=helm.toolkit.fluxcd.io,resources=helmreleases,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=helm.toolkit.fluxcd.io,resources=helmreleases/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=helm.toolkit.fluxcd.io,resources=helmreleases/finalizers,verbs=update
+
+// add the source controller rbac
+//+kubebuilder:rbac:groups=source.toolkit.fluxcd.io,resources=helmrepositories,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=source.toolkit.fluxcd.io,resources=helmrepositories/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=source.toolkit.fluxcd.io,resources=helmrepositories/finalizers,verbs=update
+
+// add statefulset rbac
+//+kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch;create;update;patch;delete
+
+// add deployments rbac
+//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+
+// add the ingress rbac
+//+kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses,verbs=get;list;watch;create;update;patch;delete
+
+// add networkpolicy rbac
+//+kubebuilder:rbac:groups=networking.k8s.io,resources=networkpolicies,verbs=get;list;watch;create;update;patch;delete
+
+// add pods rbac
+//+kubebuilder:rbac:groups="",resources=pods,verbs=get;list;watch;create;update;patch;delete
+
+// add services rbac
+//+kubebuilder:rbac:groups="",resources=services,verbs=get;list;watch;create;update;patch;delete
+
+// add secret rbac
+//+kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch;create;update;patch;delete
+
 func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	var vclusterHelmRelease helmv2.HelmRelease
 
