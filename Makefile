@@ -1,4 +1,4 @@
-VERSION ?= 0.0.4
+VERSION ?= 0.0.5
 
 # check if we are using MacOS or LINUX and use that to determine the sed command
 UNAME_S := $(shell uname -s)
@@ -63,7 +63,7 @@ SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
 .PHONY: all
-all: build build-helm-chart
+all: build #build-helm-chart
 
 ##@ General
 
