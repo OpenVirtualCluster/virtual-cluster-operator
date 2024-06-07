@@ -13,7 +13,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: openvirtualcluster-leader-election-role
+  name: '{{ include "common.names.fullname" . }}-leader-election-role'
 subjects:
   - kind: ServiceAccount
     name: '{{ include "common.names.fullname" . }}-controller-manager'
