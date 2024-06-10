@@ -5,11 +5,11 @@ entries:
       category: Infrastructure
       licenses: Apache-2.0
     apiVersion: v2
-    appVersion: 2.20.0
-    created: "2024-06-07T03:55:47.972629319Z"
+    appVersion: 2.20.1
+    created: "2024-06-10T20:41:11.198549597Z"
     description: A Library Helm Chart for grouping common logic between bitnami charts.
       This chart is not deployable by itself.
-    digest: 82585d51e1013a447e4cb8bdb9eb378681d246a69266fda99c85d1d5d15a113c
+    digest: d1117d07e91798824ad755673bf681646e4badbf0e4a557013c962b5a1a9876d
     home: https://bitnami.com
     icon: https://bitnami.com/downloads/logos/bitnami-mark.png
     keywords:
@@ -26,8 +26,8 @@ entries:
     - https://github.com/bitnami/charts/tree/main/bitnami/common
     type: library
     urls:
-    - https://charts.openvirtualcluster.dev/charts/common-2.20.0.tgz
-    version: 2.20.0
+    - https://charts.openvirtualcluster.dev/charts/common-2.20.2.tgz
+    version: 2.20.2
   flux:
   - annotations:
       category: Infrastructure
@@ -49,7 +49,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 0.36.1
-    created: "2024-06-07T03:55:47.979829238Z"
+    created: "2024-06-10T20:41:11.205595859Z"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -83,7 +83,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: v0.0.5
-    created: "2024-06-07T03:55:47.971980921Z"
+    created: "2024-06-10T20:41:11.197876928Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -92,7 +92,7 @@ entries:
       repository: https://charts.bitnami.com/bitnami
       version: 0.x.x
     description: A Helm chart for deploying the Virtual Cluster Operator
-    digest: 12d8da645f5de30d59321d1a886304b5fee7a907a74f62adcd2b3c96224ddb89
+    digest: 2bd7c37f434eb43a6f9bf2d93bb3a8b5d6f55cdb95db888dd7580b4994d3183d
     home: https://openvirtualcluster.dev/
     keywords:
     - ephemeral-environments
@@ -107,4 +107,4 @@ entries:
     urls:
     - https://charts.openvirtualcluster.dev/virtual-cluster-operator-0.0.5.tgz
     version: 0.0.5
-generated: "2024-06-07T03:55:47.963583393Z"
+generated: "2024-06-10T20:41:11.188782259Z"
