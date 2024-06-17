@@ -2,3 +2,13 @@ apiVersion: vclusters.openvirtualcluster.dev/v1alpha1
 kind: VCluster
 metadata:
   name: basic
+spec:
+  sleep: false
+  vclusterValues:
+    sync:
+      fromHost:
+        nodes:
+          enabled: true
+    controlPlane:
+      ingress:
+        enabled: true

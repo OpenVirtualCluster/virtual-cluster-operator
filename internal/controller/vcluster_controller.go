@@ -2,7 +2,9 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"time"
 
 	helmv2 "github.com/fluxcd/helm-controller/api/v2beta1"
@@ -24,7 +26,7 @@ import (
 const (
 	VclusterHelmChartRepo    = "https://charts.loft.sh"
 	VclusterHelmChart        = "vcluster"
-	VclusterHelmChartVersion = "0.19.4"
+	VclusterHelmChartVersion = "0.19.5"
 	finalizer                = "openvirtualcluster.dev/finalizer"
 	labelManagedBy           = "vcluster.loft.sh/managed-by"
 	labelHelmReleaseName     = "helm.toolkit.fluxcd.io/name"
@@ -105,6 +107,10 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, err
 	}
 
+	rawValuesJson, err := rawJson(vcluster.Spec.VClusterValues)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
 	vclusterHelmRelease = helmv2.HelmRelease{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      vcluster.Name,
@@ -122,11 +128,12 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 					},
 				},
 			},
+			Values: &apiextensionsv1.JSON{Raw: rawValuesJson},
 		},
 		Status: helmv2.HelmReleaseStatus{},
 	}
 
-	err := r.Get(ctx, types.NamespacedName{Name: vcluster.Name, Namespace: vcluster.Namespace}, &vclusterHelmRelease)
+	err = r.Get(ctx, types.NamespacedName{Name: vcluster.Name, Namespace: vcluster.Namespace}, &vclusterHelmRelease)
 	if err != nil && k8serrors.IsNotFound(err) {
 		if err := controllerutil.SetControllerReference(&vcluster, &vclusterHelmRelease, r.Scheme); err != nil {
 			return ctrl.Result{}, err
@@ -224,6 +231,14 @@ func (r *VClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	log.Info("Done reconciling VCluster", "VCluster name", vcluster.Name, "VCluster namespace", vcluster.Namespace)
 	return ctrl.Result{}, nil
+}
+
+func rawJson(values vclustersv1alpha1.VclusterValues) ([]byte, error) {
+	raw, err := json.Marshal(values)
+	if err != nil {
+		return nil, err
+	}
+	return raw, nil
 }
 
 func (r *VClusterReconciler) ScaleDownVClusterResources(ctx context.Context, vcluster vclustersv1alpha1.VCluster) error {

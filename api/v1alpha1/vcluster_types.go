@@ -7,7 +7,12 @@ import (
 
 // VClusterSpec defines the desired state of VCluster
 type VClusterSpec struct {
-	Sleep bool `json:"sleep,omitempty"`
+	Sleep          bool           `json:"sleep,omitempty"`
+	VClusterValues VclusterValues `json:"vclusterValues,omitempty"`
+}
+
+type VclusterValues struct {
+	ControlPlane ControlPlane `json:"controlPlane,omitempty"`
 }
 
 // VClusterStatus defines the observed state of VCluster
