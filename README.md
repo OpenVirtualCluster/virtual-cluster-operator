@@ -1,8 +1,8 @@
 # virtual-cluster-operator
-An operator to create and manage virtual clusters declaratively.
+// TODO(user): Add simple overview of use/purpose
 
 ## Description
-This operator creates virtual clusters declaratively using upstream Loft helm charts
+// TODO(user): An in-depth paragraph about your project and overview of use
 
 ## Getting Started
 
@@ -10,16 +10,32 @@ This operator creates virtual clusters declaratively using upstream Loft helm ch
 - go version v1.22.0+
 - docker version 17.03+.
 - kubectl version v1.11.3+.
-- helm version v3.0.0+.
 - Access to a Kubernetes v1.11.3+ cluster.
 
 ### To Deploy on the cluster
+**Build and push your image to the location specified by `IMG`:**
+
 ```sh
-helm repo add ovc-vco https://charts.openvirtualcluster.dev
-helm repo update
-helm install vco ovc-vco/virtual-cluster-operator
+make docker-build docker-push IMG=<some-registry>/virtual-cluster-operator:tag
 ```
-> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin 
+
+**NOTE:** This image ought to be published in the personal registry you specified.
+And it is required to have access to pull the image from the working environment.
+Make sure you have the proper permission to the registry if the above commands don’t work.
+
+**Install the CRDs into the cluster:**
+
+```sh
+make install
+```
+
+**Deploy the Manager to the cluster with the image specified by `IMG`:**
+
+```sh
+make deploy IMG=<some-registry>/virtual-cluster-operator:tag
+```
+
+> **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
 privileges or be logged in as admin.
 
 **Create instances of your solution**
@@ -50,10 +66,33 @@ make uninstall
 make undeploy
 ```
 
+## Project Distribution
+
+Following are the steps to build the installer and distribute this project to users.
+
+1. Build the installer for the image built and published in the registry:
+
+```sh
+make build-installer IMG=<some-registry>/virtual-cluster-operator:tag
+```
+
+NOTE: The makefile target mentioned above generates an 'install.yaml'
+file in the dist directory. This file contains all the resources built
+with Kustomize, which are necessary to install this project without
+its dependencies.
+
+2. Using the installer
+
+Users can just run kubectl apply -f <URL for YAML BUNDLE> to install the project, i.e.:
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/<org>/virtual-cluster-operator/<tag or branch>/dist/install.yaml
+```
+
 ## Contributing
 // TODO(user): Add detailed information on how you would like others to contribute to this project
 
-**NOTE:** Run `make --help` for more information on all potential `make` targets
+**NOTE:** Run `make help` for more information on all potential `make` targets
 
 More information can be found via the [Kubebuilder Documentation](https://book.kubebuilder.io/introduction.html)
 

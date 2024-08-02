@@ -5,8 +5,8 @@
 domain: openvirtualcluster.dev
 layout:
 - go.kubebuilder.io/v4
-projectName: openvirtualcluster
-repo: openvirtualcluster.dev/openvirtualcluster
+projectName: virtual-cluster-operator
+repo: github.com/OpenVirtualCluster/virtual-cluster-operator
 resources:
 - api:
     crdVersion: v1
@@ -14,7 +14,7 @@ resources:
   controller: true
   domain: openvirtualcluster.dev
   group: vclusters
-  kind: VCluster
-  path: openvirtualcluster.dev/openvirtualcluster/api/v1alpha1
+  kind: Vcluster
+  path: github.com/OpenVirtualCluster/virtual-cluster-operator/api/v1alpha1
   version: v1alpha1
 version: "3"

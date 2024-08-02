@@ -1,9 +1,0 @@
-dependencies:
-- name: common
-  repository: https://charts.bitnami.com/bitnami
-  version: 2.19.3
-- name: flux
-  repository: https://charts.bitnami.com/bitnami
-  version: 0.4.1
-digest: sha256:8760157301e91ee95f1607af539c3c6319c68761e2065e947f56c968ed6db00b
-generated: "2024-06-05T06:28:54.909364+05:30"
