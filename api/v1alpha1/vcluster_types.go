@@ -17,25 +17,22 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // VclusterSpec defines the desired state of Vcluster
 type VclusterSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
-	// Foo is an example field of Vcluster. Edit vcluster_types.go to remove/update
 	Config Config `json:"foo,omitempty"`
+
+	Sleep bool `json:"sleep,omitempty"`
 }
 
 // VclusterStatus defines the observed state of Vcluster
 type VclusterStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	KubeconfigSecretReference *corev1.SecretReference `json:"kubeconfigSecretReference,omitempty"`
+	KubeconfigCreated         bool                    `json:"kubeconfigCreated,omitempty"`
+	Conditions                []metav1.Condition      `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:object:root=true
