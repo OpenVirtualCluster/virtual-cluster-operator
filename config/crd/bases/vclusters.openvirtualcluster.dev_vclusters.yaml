@@ -42,7 +42,1532 @@ spec:
               foo:
                 description: Foo is an example field of Vcluster. Edit vcluster_types.go
                   to remove/update
-                type: string
+                properties:
+                  controlPlane:
+                    properties:
+                      advanced:
+                        properties:
+                          defaultImageRegistry:
+                            type: string
+                          globalMetadata:
+                            properties:
+                              annotations:
+                                type: object
+                            required:
+                            - annotations
+                            type: object
+                          headlessService:
+                            properties:
+                              annotations:
+                                type: object
+                              labels:
+                                type: object
+                            required:
+                            - annotations
+                            - labels
+                            type: object
+                          serviceAccount:
+                            properties:
+                              annotations:
+                                type: object
+                              enabled:
+                                type: boolean
+                              imagePullSecrets:
+                                items:
+                                  type: string
+                                type: array
+                              labels:
+                                type: object
+                              name:
+                                type: string
+                            required:
+                            - annotations
+                            - enabled
+                            - imagePullSecrets
+                            - labels
+                            - name
+                            type: object
+                          virtualScheduler:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          workloadServiceAccount:
+                            properties:
+                              annotations:
+                                type: object
+                              enabled:
+                                type: boolean
+                              imagePullSecrets:
+                                items:
+                                  type: string
+                                type: array
+                              labels:
+                                type: object
+                              name:
+                                type: string
+                            required:
+                            - annotations
+                            - enabled
+                            - imagePullSecrets
+                            - labels
+                            - name
+                            type: object
+                        required:
+                        - defaultImageRegistry
+                        - globalMetadata
+                        - headlessService
+                        - serviceAccount
+                        - virtualScheduler
+                        - workloadServiceAccount
+                        type: object
+                      backingStore:
+                        properties:
+                          database:
+                            properties:
+                              embedded:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              external:
+                                type: object
+                            required:
+                            - embedded
+                            - external
+                            type: object
+                          etcd:
+                            properties:
+                              deploy:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                  headlessService:
+                                    properties:
+                                      annotations:
+                                        type: object
+                                      labels:
+                                        type: object
+                                    required:
+                                    - annotations
+                                    - labels
+                                    type: object
+                                  service:
+                                    properties:
+                                      annotations:
+                                        type: object
+                                      enabled:
+                                        type: boolean
+                                    required:
+                                    - annotations
+                                    - enabled
+                                    type: object
+                                  statefulSet:
+                                    properties:
+                                      annotations:
+                                        type: object
+                                      enableServiceLinks:
+                                        type: boolean
+                                      enabled:
+                                        type: boolean
+                                      env:
+                                        items:
+                                          type: string
+                                        type: array
+                                      extraArgs:
+                                        items:
+                                          type: string
+                                        type: array
+                                      highAvailability:
+                                        properties:
+                                          replicas:
+                                            type: integer
+                                        required:
+                                        - replicas
+                                        type: object
+                                      image:
+                                        properties:
+                                          registry:
+                                            type: string
+                                          repository:
+                                            type: string
+                                          tag:
+                                            type: string
+                                        required:
+                                        - registry
+                                        - repository
+                                        - tag
+                                        type: object
+                                      imagePullPolicy:
+                                        type: string
+                                      labels:
+                                        type: object
+                                      persistence:
+                                        properties:
+                                          addVolumeMounts:
+                                            items:
+                                              type: string
+                                            type: array
+                                          addVolumes:
+                                            items:
+                                              type: string
+                                            type: array
+                                          volumeClaim:
+                                            properties:
+                                              accessModes:
+                                                items:
+                                                  type: string
+                                                type: array
+                                              enabled:
+                                                type: boolean
+                                              retentionPolicy:
+                                                type: string
+                                              size:
+                                                type: string
+                                              storageClass:
+                                                type: string
+                                            required:
+                                            - accessModes
+                                            - enabled
+                                            - retentionPolicy
+                                            - size
+                                            - storageClass
+                                            type: object
+                                          volumeClaimTemplates:
+                                            items:
+                                              type: string
+                                            type: array
+                                        required:
+                                        - addVolumeMounts
+                                        - addVolumes
+                                        - volumeClaim
+                                        - volumeClaimTemplates
+                                        type: object
+                                      pods:
+                                        properties:
+                                          enabled:
+                                            type: boolean
+                                          rewriteHosts:
+                                            properties:
+                                              enabled:
+                                                type: boolean
+                                              initContainer:
+                                                properties:
+                                                  image:
+                                                    type: string
+                                                  resources:
+                                                    properties:
+                                                      limits:
+                                                        properties:
+                                                          cpu:
+                                                            type: string
+                                                          memory:
+                                                            type: string
+                                                        required:
+                                                        - cpu
+                                                        - memory
+                                                        type: object
+                                                      requests:
+                                                        properties:
+                                                          cpu:
+                                                            type: string
+                                                          memory:
+                                                            type: string
+                                                        required:
+                                                        - cpu
+                                                        - memory
+                                                        type: object
+                                                    required:
+                                                    - limits
+                                                    - requests
+                                                    type: object
+                                                required:
+                                                - image
+                                                - resources
+                                                type: object
+                                            required:
+                                            - enabled
+                                            - initContainer
+                                            type: object
+                                          translateImage:
+                                            type: object
+                                          useSecretsForSATokens:
+                                            type: boolean
+                                        required:
+                                        - enabled
+                                        - rewriteHosts
+                                        - translateImage
+                                        - useSecretsForSATokens
+                                        type: object
+                                      resources:
+                                        properties:
+                                          limits:
+                                            properties:
+                                              cpu:
+                                                type: string
+                                              memory:
+                                                type: string
+                                            required:
+                                            - cpu
+                                            - memory
+                                            type: object
+                                          requests:
+                                            properties:
+                                              cpu:
+                                                type: string
+                                              memory:
+                                                type: string
+                                            required:
+                                            - cpu
+                                            - memory
+                                            type: object
+                                        required:
+                                        - limits
+                                        - requests
+                                        type: object
+                                      scheduling:
+                                        properties:
+                                          affinity:
+                                            type: object
+                                          nodeSelector:
+                                            type: object
+                                          podManagementPolicy:
+                                            type: string
+                                          priorityClassName:
+                                            type: string
+                                          tolerations:
+                                            items:
+                                              type: string
+                                            type: array
+                                          topologySpreadConstraints:
+                                            items:
+                                              type: string
+                                            type: array
+                                        required:
+                                        - affinity
+                                        - nodeSelector
+                                        - podManagementPolicy
+                                        - priorityClassName
+                                        - tolerations
+                                        - topologySpreadConstraints
+                                        type: object
+                                      security:
+                                        properties:
+                                          containerSecurityContext:
+                                            type: object
+                                          podSecurityContext:
+                                            type: object
+                                        required:
+                                        - containerSecurityContext
+                                        - podSecurityContext
+                                        type: object
+                                    required:
+                                    - annotations
+                                    - enableServiceLinks
+                                    - enabled
+                                    - env
+                                    - extraArgs
+                                    - highAvailability
+                                    - image
+                                    - imagePullPolicy
+                                    - labels
+                                    - persistence
+                                    - pods
+                                    - resources
+                                    - scheduling
+                                    - security
+                                    type: object
+                                required:
+                                - enabled
+                                - headlessService
+                                - service
+                                - statefulSet
+                                type: object
+                              embedded:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                  migrateFromDeployedEtcd:
+                                    type: boolean
+                                required:
+                                - enabled
+                                - migrateFromDeployedEtcd
+                                type: object
+                            required:
+                            - deploy
+                            - embedded
+                            type: object
+                        required:
+                        - database
+                        - etcd
+                        type: object
+                      coredns:
+                        properties:
+                          deployment:
+                            properties:
+                              annotations:
+                                type: object
+                              image:
+                                type: string
+                              labels:
+                                type: object
+                              nodeSelector:
+                                type: object
+                              pods:
+                                properties:
+                                  annotations:
+                                    type: object
+                                  labels:
+                                    type: object
+                                required:
+                                - annotations
+                                - labels
+                                type: object
+                              replicas:
+                                type: integer
+                              resources:
+                                properties:
+                                  limits:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                  requests:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                required:
+                                - limits
+                                - requests
+                                type: object
+                              topologySpreadConstraints:
+                                items:
+                                  properties:
+                                    labelSelector:
+                                      properties:
+                                        matchLabels:
+                                          properties:
+                                            k8s-app:
+                                              type: string
+                                          required:
+                                          - k8s-app
+                                          type: object
+                                      required:
+                                      - matchLabels
+                                      type: object
+                                    maxSkew:
+                                      type: integer
+                                    topologyKey:
+                                      type: string
+                                    whenUnsatisfiable:
+                                      type: string
+                                  required:
+                                  - labelSelector
+                                  - maxSkew
+                                  - topologyKey
+                                  - whenUnsatisfiable
+                                  type: object
+                                type: array
+                            required:
+                            - annotations
+                            - image
+                            - labels
+                            - nodeSelector
+                            - pods
+                            - replicas
+                            - resources
+                            - topologySpreadConstraints
+                            type: object
+                          embedded:
+                            type: boolean
+                          enabled:
+                            type: boolean
+                          overwriteConfig:
+                            type: string
+                          overwriteManifests:
+                            type: string
+                          priorityClassName:
+                            type: string
+                          service:
+                            properties:
+                              annotations:
+                                items:
+                                  type: object
+                                type: array
+                              labels:
+                                type: object
+                              spec:
+                                properties:
+                                  type:
+                                    type: string
+                                required:
+                                - type
+                                type: object
+                            required:
+                            - annotations
+                            - labels
+                            - spec
+                            type: object
+                        required:
+                        - deployment
+                        - embedded
+                        - enabled
+                        - overwriteConfig
+                        - overwriteManifests
+                        - priorityClassName
+                        - service
+                        type: object
+                      distro:
+                        properties:
+                          k0s:
+                            properties:
+                              command:
+                                items:
+                                  type: string
+                                type: array
+                              config:
+                                type: string
+                              enabled:
+                                type: boolean
+                              extraArgs:
+                                items:
+                                  type: string
+                                type: array
+                              image:
+                                properties:
+                                  registry:
+                                    type: string
+                                  repository:
+                                    type: string
+                                  tag:
+                                    type: string
+                                required:
+                                - registry
+                                - repository
+                                - tag
+                                type: object
+                              imagePullPolicy:
+                                type: string
+                              resources:
+                                properties:
+                                  limits:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                  requests:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                required:
+                                - limits
+                                - requests
+                                type: object
+                              securityContext:
+                                type: object
+                            required:
+                            - command
+                            - config
+                            - enabled
+                            - extraArgs
+                            - image
+                            - imagePullPolicy
+                            - resources
+                            - securityContext
+                            type: object
+                          k3s:
+                            properties:
+                              command:
+                                items:
+                                  type: string
+                                type: array
+                              enabled:
+                                type: boolean
+                              extraArgs:
+                                items:
+                                  type: string
+                                type: array
+                              image:
+                                properties:
+                                  registry:
+                                    type: string
+                                  repository:
+                                    type: string
+                                  tag:
+                                    type: string
+                                required:
+                                - registry
+                                - repository
+                                - tag
+                                type: object
+                              imagePullPolicy:
+                                type: string
+                              resources:
+                                properties:
+                                  limits:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                  requests:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                required:
+                                - limits
+                                - requests
+                                type: object
+                              securityContext:
+                                type: object
+                            required:
+                            - command
+                            - enabled
+                            - extraArgs
+                            - image
+                            - imagePullPolicy
+                            - resources
+                            - securityContext
+                            type: object
+                          k8s:
+                            properties:
+                              apiServer:
+                                properties:
+                                  command:
+                                    items:
+                                      type: string
+                                    type: array
+                                  enabled:
+                                    type: boolean
+                                  extraArgs:
+                                    items:
+                                      type: string
+                                    type: array
+                                  image:
+                                    properties:
+                                      registry:
+                                        type: string
+                                      repository:
+                                        type: string
+                                      tag:
+                                        type: string
+                                    required:
+                                    - registry
+                                    - repository
+                                    - tag
+                                    type: object
+                                  imagePullPolicy:
+                                    type: string
+                                required:
+                                - command
+                                - enabled
+                                - extraArgs
+                                - image
+                                - imagePullPolicy
+                                type: object
+                              controllerManager:
+                                properties:
+                                  command:
+                                    items:
+                                      type: string
+                                    type: array
+                                  enabled:
+                                    type: boolean
+                                  extraArgs:
+                                    items:
+                                      type: string
+                                    type: array
+                                  image:
+                                    properties:
+                                      registry:
+                                        type: string
+                                      repository:
+                                        type: string
+                                      tag:
+                                        type: string
+                                    required:
+                                    - registry
+                                    - repository
+                                    - tag
+                                    type: object
+                                  imagePullPolicy:
+                                    type: string
+                                required:
+                                - command
+                                - enabled
+                                - extraArgs
+                                - image
+                                - imagePullPolicy
+                                type: object
+                              enabled:
+                                type: boolean
+                              resources:
+                                properties:
+                                  limits:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                  requests:
+                                    properties:
+                                      cpu:
+                                        type: string
+                                      memory:
+                                        type: string
+                                    required:
+                                    - cpu
+                                    - memory
+                                    type: object
+                                required:
+                                - limits
+                                - requests
+                                type: object
+                              scheduler:
+                                properties:
+                                  command:
+                                    items:
+                                      type: string
+                                    type: array
+                                  extraArgs:
+                                    items:
+                                      type: string
+                                    type: array
+                                  image:
+                                    properties:
+                                      registry:
+                                        type: string
+                                      repository:
+                                        type: string
+                                      tag:
+                                        type: string
+                                    required:
+                                    - registry
+                                    - repository
+                                    - tag
+                                    type: object
+                                  imagePullPolicy:
+                                    type: string
+                                required:
+                                - command
+                                - extraArgs
+                                - image
+                                - imagePullPolicy
+                                type: object
+                              securityContext:
+                                type: object
+                            required:
+                            - apiServer
+                            - controllerManager
+                            - enabled
+                            - resources
+                            - scheduler
+                            - securityContext
+                            type: object
+                        required:
+                        - k0s
+                        - k3s
+                        - k8s
+                        type: object
+                      ingress:
+                        properties:
+                          annotations:
+                            properties:
+                              nginx.ingress.kubernetes.io/backend-protocol:
+                                type: string
+                              nginx.ingress.kubernetes.io/ssl-passthrough:
+                                type: string
+                              nginx.ingress.kubernetes.io/ssl-redirect:
+                                type: string
+                            required:
+                            - nginx.ingress.kubernetes.io/backend-protocol
+                            - nginx.ingress.kubernetes.io/ssl-passthrough
+                            - nginx.ingress.kubernetes.io/ssl-redirect
+                            type: object
+                          enabled:
+                            type: boolean
+                          host:
+                            type: string
+                          labels:
+                            type: object
+                          pathType:
+                            type: string
+                          spec:
+                            properties:
+                              tls:
+                                items:
+                                  description: IngressTLS describes the transport
+                                    layer security associated with an ingress.
+                                  properties:
+                                    hosts:
+                                      description: |-
+                                        hosts is a list of hosts included in the TLS certificate. The values in
+                                        this list must match the name/s used in the tlsSecret. Defaults to the
+                                        wildcard host setting for the loadbalancer controller fulfilling this
+                                        Ingress, if left unspecified.
+                                      items:
+                                        type: string
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                    secretName:
+                                      description: |-
+                                        secretName is the name of the secret used to terminate TLS traffic on
+                                        port 443. Field is left optional to allow TLS routing based on SNI
+                                        hostname alone. If the SNI host in a listener conflicts with the "Host"
+                                        header field used by an IngressRule, the SNI host is used for termination
+                                        and value of the "Host" header is used for routing.
+                                      type: string
+                                  type: object
+                                type: array
+                            required:
+                            - tls
+                            type: object
+                        required:
+                        - annotations
+                        - enabled
+                        - host
+                        - labels
+                        - pathType
+                        - spec
+                        type: object
+                      proxy:
+                        properties:
+                          bindAddress:
+                            type: string
+                          extraSANs:
+                            items:
+                              type: string
+                            type: array
+                          port:
+                            type: integer
+                        required:
+                        - bindAddress
+                        - extraSANs
+                        - port
+                        type: object
+                      service:
+                        properties:
+                          annotations:
+                            items:
+                              type: string
+                            type: array
+                          enabled:
+                            type: boolean
+                          httpsNodePort:
+                            type: integer
+                          kubeletNodePort:
+                            type: integer
+                          labels:
+                            type: object
+                          spec:
+                            properties:
+                              type:
+                                type: string
+                            required:
+                            - type
+                            type: object
+                        required:
+                        - annotations
+                        - enabled
+                        - httpsNodePort
+                        - kubeletNodePort
+                        - labels
+                        - spec
+                        type: object
+                      serviceMonitor:
+                        properties:
+                          annotations:
+                            type: object
+                          enabled:
+                            type: boolean
+                          labels:
+                            type: object
+                        required:
+                        - annotations
+                        - enabled
+                        - labels
+                        type: object
+                      statefulSet:
+                        properties:
+                          annotations:
+                            type: object
+                          args:
+                            items:
+                              type: string
+                            type: array
+                          command:
+                            items:
+                              type: string
+                            type: array
+                          enableServiceLinks:
+                            type: boolean
+                          env:
+                            items:
+                              type: string
+                            type: array
+                          highAvailability:
+                            properties:
+                              leaseDuration:
+                                type: integer
+                              renewDeadline:
+                                type: integer
+                              replicas:
+                                type: integer
+                              retryPeriod:
+                                type: integer
+                            required:
+                            - leaseDuration
+                            - renewDeadline
+                            - replicas
+                            - retryPeriod
+                            type: object
+                          image:
+                            properties:
+                              registry:
+                                type: string
+                              repository:
+                                type: string
+                              tag:
+                                type: string
+                            required:
+                            - registry
+                            - repository
+                            - tag
+                            type: object
+                          imagePullPolicy:
+                            type: string
+                          labels:
+                            type: object
+                          persistence:
+                            properties:
+                              addVolumeMounts:
+                                items:
+                                  type: string
+                                type: array
+                              addVolumes:
+                                items:
+                                  type: string
+                                type: array
+                              binariesVolume:
+                                items:
+                                  properties:
+                                    emptyDir:
+                                      type: object
+                                    name:
+                                      type: string
+                                  required:
+                                  - emptyDir
+                                  - name
+                                  type: object
+                                type: array
+                              volumeClaim:
+                                properties:
+                                  accessModes:
+                                    items:
+                                      type: string
+                                    type: array
+                                  enabled:
+                                    type: boolean
+                                  retentionPolicy:
+                                    type: string
+                                  size:
+                                    type: string
+                                  storageClass:
+                                    type: string
+                                required:
+                                - accessModes
+                                - enabled
+                                - retentionPolicy
+                                - size
+                                - storageClass
+                                type: object
+                              volumeClaimTemplates:
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - addVolumeMounts
+                            - addVolumes
+                            - binariesVolume
+                            - volumeClaim
+                            - volumeClaimTemplates
+                            type: object
+                          pods:
+                            properties:
+                              enabled:
+                                type: boolean
+                              rewriteHosts:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                  initContainer:
+                                    properties:
+                                      image:
+                                        type: string
+                                      resources:
+                                        properties:
+                                          limits:
+                                            properties:
+                                              cpu:
+                                                type: string
+                                              memory:
+                                                type: string
+                                            required:
+                                            - cpu
+                                            - memory
+                                            type: object
+                                          requests:
+                                            properties:
+                                              cpu:
+                                                type: string
+                                              memory:
+                                                type: string
+                                            required:
+                                            - cpu
+                                            - memory
+                                            type: object
+                                        required:
+                                        - limits
+                                        - requests
+                                        type: object
+                                    required:
+                                    - image
+                                    - resources
+                                    type: object
+                                required:
+                                - enabled
+                                - initContainer
+                                type: object
+                              translateImage:
+                                type: object
+                              useSecretsForSATokens:
+                                type: boolean
+                            required:
+                            - enabled
+                            - rewriteHosts
+                            - translateImage
+                            - useSecretsForSATokens
+                            type: object
+                          probes:
+                            properties:
+                              livenessProbe:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              readinessProbe:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              startupProbe:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                            required:
+                            - livenessProbe
+                            - readinessProbe
+                            - startupProbe
+                            type: object
+                          resources:
+                            properties:
+                              limits:
+                                properties:
+                                  cpu:
+                                    type: string
+                                  memory:
+                                    type: string
+                                required:
+                                - cpu
+                                - memory
+                                type: object
+                              requests:
+                                properties:
+                                  cpu:
+                                    type: string
+                                  memory:
+                                    type: string
+                                required:
+                                - cpu
+                                - memory
+                                type: object
+                            required:
+                            - limits
+                            - requests
+                            type: object
+                          scheduling:
+                            properties:
+                              affinity:
+                                type: object
+                              nodeSelector:
+                                type: object
+                              podManagementPolicy:
+                                type: string
+                              priorityClassName:
+                                type: string
+                              tolerations:
+                                items:
+                                  type: string
+                                type: array
+                              topologySpreadConstraints:
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - affinity
+                            - nodeSelector
+                            - podManagementPolicy
+                            - priorityClassName
+                            - tolerations
+                            - topologySpreadConstraints
+                            type: object
+                          security:
+                            properties:
+                              containerSecurityContext:
+                                type: object
+                              podSecurityContext:
+                                type: object
+                            required:
+                            - containerSecurityContext
+                            - podSecurityContext
+                            type: object
+                          workingDir:
+                            type: string
+                        required:
+                        - annotations
+                        - args
+                        - command
+                        - enableServiceLinks
+                        - env
+                        - highAvailability
+                        - image
+                        - imagePullPolicy
+                        - labels
+                        - persistence
+                        - pods
+                        - probes
+                        - resources
+                        - scheduling
+                        - security
+                        - workingDir
+                        type: object
+                    required:
+                    - advanced
+                    - backingStore
+                    - coredns
+                    - distro
+                    - ingress
+                    - proxy
+                    - service
+                    - serviceMonitor
+                    - statefulSet
+                    type: object
+                  experimental:
+                    properties:
+                      genericSync:
+                        properties:
+                          clusterRole:
+                            properties:
+                              extraRules:
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - extraRules
+                            type: object
+                          role:
+                            properties:
+                              extraRules:
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - extraRules
+                            type: object
+                        required:
+                        - clusterRole
+                        - role
+                        type: object
+                      isolatedControlPlane:
+                        properties:
+                          headless:
+                            type: boolean
+                        required:
+                        - headless
+                        type: object
+                      multiNamespaceMode:
+                        properties:
+                          enabled:
+                            type: boolean
+                        required:
+                        - enabled
+                        type: object
+                      syncSettings:
+                        properties:
+                          disableSync:
+                            type: boolean
+                          rewriteKubernetesService:
+                            type: boolean
+                          setOwner:
+                            type: boolean
+                          syncLabels:
+                            items:
+                              type: string
+                            type: array
+                          targetNamespace:
+                            type: string
+                        required:
+                        - disableSync
+                        - rewriteKubernetesService
+                        - setOwner
+                        - syncLabels
+                        - targetNamespace
+                        type: object
+                    required:
+                    - genericSync
+                    - isolatedControlPlane
+                    - multiNamespaceMode
+                    - syncSettings
+                    type: object
+                  exportKubeConfig:
+                    properties:
+                      context:
+                        type: string
+                      secret:
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        required:
+                        - name
+                        - namespace
+                        type: object
+                      server:
+                        type: string
+                    required:
+                    - context
+                    - secret
+                    - server
+                    type: object
+                  plugins:
+                    type: object
+                  sync:
+                    properties:
+                      fromHost:
+                        properties:
+                          csiDrivers:
+                            properties:
+                              enabled:
+                                type: string
+                            required:
+                            - enabled
+                            type: object
+                          csiNodes:
+                            properties:
+                              enabled:
+                                type: string
+                            required:
+                            - enabled
+                            type: object
+                          csiStorageCapacities:
+                            properties:
+                              enabled:
+                                type: string
+                            required:
+                            - enabled
+                            type: object
+                          events:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          ingressClasses:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          nodes:
+                            properties:
+                              clearImageStatus:
+                                type: boolean
+                              enabled:
+                                type: boolean
+                              selector:
+                                properties:
+                                  all:
+                                    type: boolean
+                                  labels:
+                                    type: object
+                                required:
+                                - all
+                                - labels
+                                type: object
+                              syncBackChanges:
+                                type: boolean
+                            required:
+                            - clearImageStatus
+                            - enabled
+                            - selector
+                            - syncBackChanges
+                            type: object
+                          storageClasses:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                        required:
+                        - csiDrivers
+                        - csiNodes
+                        - csiStorageCapacities
+                        - events
+                        - ingressClasses
+                        - nodes
+                        - storageClasses
+                        type: object
+                      toHost:
+                        properties:
+                          configMaps:
+                            properties:
+                              all:
+                                type: boolean
+                              enabled:
+                                type: boolean
+                            required:
+                            - all
+                            - enabled
+                            type: object
+                          endpoints:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          ingresses:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          networkPolicies:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          persistentVolumeClaims:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          persistentVolumes:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          podDisruptionBudgets:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          pods:
+                            properties:
+                              enabled:
+                                type: boolean
+                              rewriteHosts:
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                  initContainer:
+                                    properties:
+                                      image:
+                                        type: string
+                                      resources:
+                                        properties:
+                                          limits:
+                                            properties:
+                                              cpu:
+                                                type: string
+                                              memory:
+                                                type: string
+                                            required:
+                                            - cpu
+                                            - memory
+                                            type: object
+                                          requests:
+                                            properties:
+                                              cpu:
+                                                type: string
+                                              memory:
+                                                type: string
+                                            required:
+                                            - cpu
+                                            - memory
+                                            type: object
+                                        required:
+                                        - limits
+                                        - requests
+                                        type: object
+                                    required:
+                                    - image
+                                    - resources
+                                    type: object
+                                required:
+                                - enabled
+                                - initContainer
+                                type: object
+                              translateImage:
+                                type: object
+                              useSecretsForSATokens:
+                                type: boolean
+                            required:
+                            - enabled
+                            - rewriteHosts
+                            - translateImage
+                            - useSecretsForSATokens
+                            type: object
+                          priorityClasses:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          secrets:
+                            properties:
+                              all:
+                                type: boolean
+                              enabled:
+                                type: boolean
+                            required:
+                            - all
+                            - enabled
+                            type: object
+                          serviceAccounts:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          services:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          storageClasses:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          volumeSnapshots:
+                            properties:
+                              enabled:
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                        required:
+                        - configMaps
+                        - endpoints
+                        - ingresses
+                        - networkPolicies
+                        - persistentVolumeClaims
+                        - persistentVolumes
+                        - podDisruptionBudgets
+                        - pods
+                        - priorityClasses
+                        - secrets
+                        - serviceAccounts
+                        - services
+                        - storageClasses
+                        - volumeSnapshots
+                        type: object
+                    required:
+                    - fromHost
+                    - toHost
+                    type: object
+                  telemetry:
+                    properties:
+                      enabled:
+                        type: boolean
+                    required:
+                    - enabled
+                    type: object
+                required:
+                - controlPlane
+                - experimental
+                - exportKubeConfig
+                - plugins
+                - sync
+                - telemetry
+                type: object
             type: object
           status:
             description: VclusterStatus defines the observed state of Vcluster

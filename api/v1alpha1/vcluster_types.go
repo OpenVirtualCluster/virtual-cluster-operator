@@ -29,7 +29,7 @@ type VclusterSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Vcluster. Edit vcluster_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Config Config `json:"foo,omitempty"`
 }
 
 // VclusterStatus defines the observed state of Vcluster
