@@ -1,0 +1,63 @@
+apiVersion: vclusters.openvirtualcluster.dev/v1alpha1
+kind: Vcluster
+metadata:
+  labels:
+    app.kubernetes.io/name: virtual-cluster-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: vcluster-sample
+spec:
+  valuesString: |
+    sync:
+      # Configure resources to sync from the virtual cluster to the host cluster.
+      toHost:
+        # Services defines if services created within the virtual cluster should get synced to the host cluster.
+        services:
+          enabled: true
+        # Endpoints defines if endpoints created within the virtual cluster should get synced to the host cluster.
+        endpoints:
+          enabled: true
+        # PersistentVolumeClaims defines if persistent volume claims created within the virtual cluster should get synced to the host cluster.
+        persistentVolumeClaims:
+          enabled: true
+        # ConfigMaps defines if config maps created within the virtual cluster should get synced to the host cluster.
+        configMaps:
+          enabled: true
+          # All defines if all resources of that type should get synced or only the necessary ones that are needed.
+          all: false
+        # Secrets defines if secrets created within the virtual cluster should get synced to the host cluster.
+        secrets:
+          enabled: true
+          # All defines if all resources of that type should get synced or only the necessary ones that are needed.
+          all: false
+        # Pods defines if pods created within the virtual cluster should get synced to the host cluster.
+        pods:
+          # Enabled defines if pod syncing should be enabled.
+          enabled: true
+          # TranslateImage maps an image to another image that should be used instead. For example this can be used to rewrite
+          # a certain image that is used within the virtual cluster to be another image on the host cluster
+          translateImage: {}
+          # EnforceTolerations will add the specified tolerations to all pods synced by the virtual cluster.
+          enforceTolerations: []
+          # UseSecretsForSATokens will use secrets to save the generated service account tokens by virtual cluster instead of using a
+          # pod annotation.
+          useSecretsForSATokens: false
+          # RewriteHosts is a special option needed to rewrite statefulset containers to allow the correct FQDN. virtual cluster will add
+          # a small container to each stateful set pod that will initially rewrite the /etc/hosts file to match the FQDN expected by
+          # the virtual cluster.
+          rewriteHosts:
+            # Enabled specifies if rewriting stateful set pods should be enabled.
+            enabled: true
+            # InitContainer holds extra options for the init container used by vCluster to rewrite the FQDN for stateful set pods.
+            initContainer:
+              # Image is the image virtual cluster should use to rewrite this FQDN.
+              image: "library/alpine:3.20"
+              # Resources are the resources that should be assigned to the init container for each stateful set init container.
+              resources:
+                # Limits are resource limits for the container
+                limits:
+                  cpu: 30m
+                  memory: 64Mi
+                # Requests are minimal resources that will be consumed by the container
+                requests:
+                  cpu: 30m
+                  memory: 64Mi

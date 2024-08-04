@@ -5,9 +5,9 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - vclusters.openvirtualcluster.dev
+  - Vclusters.openvirtualcluster.dev
   resources:
-  - vclusters
+  - Vclusters
   verbs:
   - create
   - delete
@@ -17,15 +17,15 @@ rules:
   - update
   - watch
 - apiGroups:
-  - vclusters.openvirtualcluster.dev
+  - Vclusters.openvirtualcluster.dev
   resources:
-  - vclusters/finalizers
+  - Vclusters/finalizers
   verbs:
   - update
 - apiGroups:
-  - vclusters.openvirtualcluster.dev
+  - Vclusters.openvirtualcluster.dev
   resources:
-  - vclusters/status
+  - Vclusters/status
   verbs:
   - get
   - patch

@@ -7,3 +7,10 @@ metadata:
   name: vcluster-sample
 spec:
   # TODO(user): Add fields here
+---
+# configmap with vcluster values.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vcluster-sample
+  namespace: default

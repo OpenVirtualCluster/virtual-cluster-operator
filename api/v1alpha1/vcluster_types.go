@@ -17,13 +17,20 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"github.com/loft-sh/vcluster-config/config"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // VclusterSpec defines the desired state of Vcluster
 type VclusterSpec struct {
-	Config Config `json:"foo,omitempty"`
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Schemaless
+	Config *config.Config `json:"config,omitempty"`
+
+	ValuesString string `json:"valuesString,omitempty"`
+
+	ValuesFromConfigMap *corev1.ConfigMapKeySelector `json:"valuesFromConfigMap,omitempty"`
 
 	Sleep bool `json:"sleep,omitempty"`
 }
