@@ -22,11 +22,19 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+type VclusterConfig struct {
+	config.Config `json:",inline"`
+}
+
+func (in *VclusterConfig) DeepCopyInto(out *VclusterConfig) {
+	*out = *in
+}
+
 // VclusterSpec defines the desired state of Vcluster
 type VclusterSpec struct {
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
-	Config *config.Config `json:"config,omitempty"`
+	Config VclusterConfig `json:"config,omitempty"`
 
 	ValuesString string `json:"valuesString,omitempty"`
 
