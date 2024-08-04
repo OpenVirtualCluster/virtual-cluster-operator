@@ -20,7 +20,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/loft-sh/vcluster-config/config"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"os"
 	"time"
@@ -103,8 +102,8 @@ func (r *VclusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		return ctrl.Result{}, err
 	}
 
-	if Vcluster.Spec.Config != nil {
-		configJson, err := getJSONFromConfig(Vcluster.Spec.Config)
+	if &Vcluster.Spec.Config != nil {
+		configJson, err := getJSONFromConfig(&Vcluster.Spec.Config)
 		if err != nil {
 			return ctrl.Result{}, err
 		}
@@ -268,7 +267,7 @@ func (r *VclusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	return ctrl.Result{}, nil
 }
 
-func getJSONFromConfig(config *config.Config) (*apiextensionsv1.JSON, error) {
+func getJSONFromConfig(config *Vclustersv1alpha1.VclusterConfig) (*apiextensionsv1.JSON, error) {
 	configJson, err := json.Marshal(config)
 	if err != nil {
 		return nil, err
