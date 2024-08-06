@@ -48,7 +48,7 @@ type VclusterReconciler struct {
 
 const (
 	VclusterHelmChartRepo    = "https://charts.loft.sh"
-	VclusterHelmChart        = "Vcluster"
+	VclusterHelmChart        = "vcluster"
 	VclusterHelmChartVersion = "0.19.4"
 	finalizer                = "openvirtualcluster.dev/finalizer"
 	labelManagedBy           = "Vcluster.loft.sh/managed-by"
@@ -91,7 +91,7 @@ func (r *VclusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	helmRepo := &sourcev1.HelmRepository{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "Vcluster",
+			Name:      fmt.Sprintf("vcluster-%s-repo", Vcluster.Name),
 			Namespace: Vcluster.Namespace,
 		},
 		Spec: sourcev1.HelmRepositorySpec{
@@ -120,7 +120,7 @@ func (r *VclusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 						Version: VclusterHelmChartVersion,
 						SourceRef: helmv2.CrossNamespaceObjectReference{
 							Kind:      sourcev1.HelmRepositoryKind,
-							Name:      "Vcluster",
+							Name:      helmRepo.Name,
 							Namespace: Vcluster.Namespace,
 						},
 					},
